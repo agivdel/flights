@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toList;
 public class Rules {
     public static final LocalDateTime now = LocalDateTime.now();
 
-    /**1) фильтрование полетов с вылетами в будущем: вариант №1*/
+    /**1) удаление полетов с вылетами в будущем: вариант №1*/
     public List<Flight> filterFlightWithDepInPast(List<Flight> flights) {
         return departureInPast.filter(flights);
     }
@@ -33,7 +33,7 @@ public class Rules {
     };
 
 
-    /**1) фильтрование полетов с вылетами в будущем: вариант №2*/
+    /**1) удаление полетов с вылетами в будущем: вариант №2*/
     final Rule<List<Flight>, List<Flight>> departureInPast2 = new Rule<List<Flight>, List<Flight>>() {
         @Override
         public List<Flight> filter(List<Flight> flights) {
@@ -45,8 +45,8 @@ public class Rules {
         }
     };
 
-    /**2) фильтрование полетов с вылетами раньше прилетов*/
-    final Rule<List<Flight>, List<Flight>> removeDepartureBeforeArrival = new Rule<List<Flight>, List<Flight>>() {
+    /**2) удаление полетов с вылетами позже прилетов: вариант №1*/
+    final Rule<List<Flight>, List<Flight>> departureAfterArrival = new Rule<List<Flight>, List<Flight>>() {
         @Override
         public List<Flight> filter(List<Flight> flights) {
             List<Flight> resultFlights = new ArrayList<>(flights);
@@ -60,6 +60,18 @@ public class Rules {
                 }
             }
             return resultFlights;
+        }
+    };
+
+    /**2) удаление полетов с вылетами позже прилетов:: вариант №2*/
+    final Rule<List<Flight>, List<Flight>> departureAfterArrival2 = new Rule<List<Flight>, List<Flight>>() {
+        @Override
+        public List<Flight> filter(List<Flight> flights) {
+            return flights.stream()
+                    .filter(f -> f.getSegments()
+                            .stream()
+                            .allMatch(s -> s.getDepartureDate().isBefore(s.getArrivalDate())))
+                    .collect(toList());
         }
     };
 }
