@@ -1,6 +1,5 @@
 package com.gridnine.testing;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -39,6 +38,26 @@ public class RulesTest {
         System.out.println(flights);
         List<Flight> result = rules.filterFlightWithDepInPast(flights);
         System.out.println(result);
+
+        assertNotEquals(result, flights);
+        assertEquals(1, result.size());
+        assertEquals(dayFromNow.plusHours(1), result.get(0).getSegments().get(0).getArrivalDate());
+    }
+
+    @Test
+    public void departureInPast2_the_normal_flights_remain_unchanged2() {
+        flights.add(createFlight(dayFromNow, dayFromNow.plusHours(1)));
+        List<Flight> result = rules.departureInPast2.filter(flights);
+
+        assertEquals(result, flights);
+    }
+
+    @Test
+    public void departureInPast2_flights_with_departures_in_the_past_are_filtered_off() {
+        flights.add(createFlight(dayFromNow, dayFromNow.plusHours(1)));
+        flights.add(createFlight(dayFromNow, dayFromNow.plusHours(2),
+                dayFromNow.minusDays(4), dayFromNow.minusDays(4).plusHours(6)));
+        List<Flight> result = rules.departureInPast2.filter(flights);
 
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
