@@ -38,14 +38,12 @@ public class Rules {
         @Override
         public List<Flight> filter(List<Flight> flights) {
             return flights.stream()
-                    .filter(f -> noneDepartureInPast(f))
+                    .filter(f -> f.getSegments()
+                            .stream()
+                            .allMatch(s -> s.getDepartureDate().isAfter(now)))
                     .collect(toList());
         }
     };
-
-    private boolean noneDepartureInPast(Flight flight) {
-        return flight.getSegments().stream().allMatch(s -> s.getDepartureDate().isAfter(now));
-    }
 
     /**2) фильтрование полетов с вылетами раньше прилетов*/
     final Rule<List<Flight>, List<Flight>> removeDepartureBeforeArrival = new Rule<List<Flight>, List<Flight>>() {
