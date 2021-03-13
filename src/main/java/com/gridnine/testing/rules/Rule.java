@@ -1,4 +1,4 @@
-package com.gridnine.testing;
+package com.gridnine.testing.rules;
 
 import java.util.Objects;
 

@@ -1,4 +1,7 @@
-package com.gridnine.testing;
+package com.gridnine.testing.rules;
+
+import com.gridnine.testing.entities.Flight;
+import com.gridnine.testing.entities.Segment;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -11,42 +14,27 @@ import static java.util.stream.Collectors.toList;
 
 public class Rules {
     public static final LocalDateTime now = LocalDateTime.now();
+    public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
+    public static final Predicate<Segment> departureAfterArrival = s -> s.getDepartureDate().isAfter(s.getArrivalDate());
 
 
-    /**
-     * 1.2) удаление полетов с вылетами в будущем: вариант №2
-     */
-    public final Rule<List<Flight>, List<Flight>> departureInPastStream = new Rule<List<Flight>, List<Flight>>() {
-        @Override
-        public List<Flight> filter(List<Flight> flights) {
-            Predicate<Segment> predicate = s -> s.getDepartureDate().isBefore(now);
-            return streamAndRemoveFlightIf(predicate, flights);
-        }
-    };
-
-    /**
-     * 2.2) удаление полетов с вылетами позже прилетов:: вариант №2
-     */
-    final Rule<List<Flight>, List<Flight>> departureAfterArrivalStream = new Rule<List<Flight>, List<Flight>>() {
-        @Override
-        public List<Flight> filter(List<Flight> flights) {
-            Predicate<Segment> predicate = s -> s.getDepartureDate().isAfter(s.getArrivalDate());
-            return streamAndRemoveFlightIf(predicate, flights);
-        }
-    };
-
-    public List<Flight> streamAndRemoveFlightIf(Predicate<Segment> predicate, List<Flight> flights) {
-        return flights.stream()
-                .filter(f -> f.getSegments()
-                .stream()
-                .noneMatch(predicate))
-                .collect(toList());
+    public static Rule<List<Flight>, List<Flight>> removeFlightIf(Predicate<Segment> predicate) {
+        return new Rule<List<Flight>, List<Flight>>() {
+            @Override
+            public List<Flight> filter(List<Flight> flights) {
+                return flights.stream()
+                        .filter(f -> f.getSegments()
+                                .stream()
+                                .noneMatch(predicate))
+                        .collect(toList());
+            }
+        };
     }
 
     /**
      * 3) удаление полетов с общим временем на земле свыше 2 часов
      */
-    final Rule<List<Flight>, List<Flight>> stayOnGroundOver2HoursIterator = new Rule<List<Flight>, List<Flight>>() {
+    public final Rule<List<Flight>, List<Flight>> stayOnGroundOver2HoursIterator = new Rule<List<Flight>, List<Flight>>() {
         @Override
         public List<Flight> filter(List<Flight> flights) {
             List<Flight> resultFlights = new ArrayList<>(flights);

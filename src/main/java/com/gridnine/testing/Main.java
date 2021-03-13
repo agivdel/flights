@@ -1,6 +1,12 @@
 package com.gridnine.testing;
 
+import com.gridnine.testing.entities.Flight;
+import com.gridnine.testing.rules.Rules;
+import com.gridnine.testing.util.FlightBuilder;
+
 import java.util.List;
+
+import static com.gridnine.testing.rules.Rules.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -10,11 +16,11 @@ public class Main {
         List<Flight> result;
 
         //1. вылет до текущего момента времени
-        result = rules.departureInPastStream.filter(flights);
+        result = removeFlightIf(departureInPast).filter(flights);
         System.out.println("\nflights without departures in the past: " + result);
 
         //2. имеются сегменты с датой вылета позже даты вылета
-        result = rules.departureAfterArrivalStream.filter(flights);
+        result = removeFlightIf(departureAfterArrival).filter(flights);
         System.out.println("\nflights without departures after arrival: " + result);
 
         //3. общее время, проведённое на земле превышает два часа
@@ -23,8 +29,8 @@ public class Main {
 
 
         //4. применение нескольких фильтров одновременно
-        result = rules.departureInPastStream
-                .andThen(rules.departureAfterArrivalStream)
+        result = removeFlightIf(departureInPast)
+                .andThen(removeFlightIf(departureAfterArrival))
                 .andThen(rules.stayOnGroundOver2HoursIterator)
                 .filter(flights);
         System.out.println("\nflights after working the several filters: " + result);

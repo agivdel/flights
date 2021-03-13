@@ -1,8 +1,13 @@
 package com.gridnine.testing;
 
+import com.gridnine.testing.entities.Flight;
+import com.gridnine.testing.entities.Segment;
+import com.gridnine.testing.rules.Rules;
+import com.gridnine.testing.util.FlightBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static com.gridnine.testing.rules.Rules.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +22,7 @@ public class RulesTest {
     public void departureInPastStream_the_normal_flights_are_remain_unchanged2() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
-        List<Flight> result = rules.departureInPastStream.filter(flights);
+        List<Flight> result = removeFlightIf(departureInPast).filter(flights);
 
         assertEquals(result, flights);
     }
@@ -29,7 +34,7 @@ public class RulesTest {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(2),
                 dayFromNow.minusDays(4), dayFromNow.minusDays(4).plusHours(6)));
-        List<Flight> result = rules.departureInPastStream.filter(flights);
+        List<Flight> result = removeFlightIf(departureInPast).filter(flights);
 
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
@@ -40,7 +45,7 @@ public class RulesTest {
     public void departureAfterArrivalStream_the_normal_flights_are_remain_unchanged2() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
-        List<Flight> result = rules.departureAfterArrivalStream.filter(flights);
+        List<Flight> result = removeFlightIf(departureAfterArrival).filter(flights);
 
         assertEquals(result, flights);
     }
@@ -51,7 +56,7 @@ public class RulesTest {
                 dayFromNow, dayFromNow.plusHours(1)));
         flights.add(createFlight(
                 dayFromNow, dayFromNow.minusDays(2)));
-        List<Flight> result = rules.departureAfterArrivalStream.filter(flights);
+        List<Flight> result = removeFlightIf(departureAfterArrival).filter(flights);
 
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
@@ -92,8 +97,8 @@ public class RulesTest {
     @Test
     public void combine_some_filters() {
         flights = FlightBuilder.createFlights();
-        List<Flight> result = rules.departureInPastStream
-                .andThen(rules.departureAfterArrivalStream)
+        List<Flight> result = removeFlightIf(departureInPast)
+                .andThen(removeFlightIf(departureAfterArrival))
                 .andThen(rules.stayOnGroundOver2HoursIterator)
                 .filter(flights);
 
