@@ -2,6 +2,7 @@ package com.gridnine.testing;
 
 import java.util.Objects;
 
+@FunctionalInterface
 public interface Rule<IN, OUT> {
     default <OUT2> Rule<IN, OUT2> andThen(Rule<OUT, OUT2> next) {
         Objects.requireNonNull(next);

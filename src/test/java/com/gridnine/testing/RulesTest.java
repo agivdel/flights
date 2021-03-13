@@ -14,7 +14,7 @@ public class RulesTest {
     private final Rules rules = new Rules();
 
     @Test
-    public void filterFlightWithDepInPast_the_normal_flights_remain_unchanged() {
+    public void filterFlightWithDepInPast_the_normal_flights_are_remain_unchanged() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
         List<Flight> result = rules.filterFlightWithDepInPast(flights);
@@ -39,7 +39,7 @@ public class RulesTest {
     }
 
     @Test
-    public void departureInPast2_the_normal_flights_remain_unchanged2() {
+    public void departureInPast2_the_normal_flights_are_remain_unchanged2() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
         List<Flight> result = rules.departureInPast2.filter(flights);
@@ -62,7 +62,7 @@ public class RulesTest {
     }
 
     @Test
-    public void departureAfterArrival_the_normal_flights_remain_unchanged() {
+    public void departureAfterArrival_the_normal_flights_are_remain_unchanged() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
         List<Flight> result = rules.departureAfterArrival.filter(flights);
@@ -84,7 +84,20 @@ public class RulesTest {
     }
 
     @Test
-    public void departureAfterArrival_the_normal_flights_remain_unchanged2() {
+    public void departureAfterArrival12_flights_with_departures_after_arrival_are_filtered_off2() {
+        flights.add(createFlight(
+                dayFromNow, dayFromNow.plusHours(1)));
+        flights.add(createFlight(
+                dayFromNow, dayFromNow.minusDays(2)));
+        List<Flight> result = rules.departureAfterArrival12.filter(flights);
+
+        assertNotEquals(result, flights);
+        assertEquals(1, result.size());
+        assertEquals(flights.get(0), result.get(0));
+    }
+
+    @Test
+    public void departureAfterArrival2_the_normal_flights_are_remain_unchanged2() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
         List<Flight> result = rules.departureAfterArrival2.filter(flights);
@@ -93,7 +106,7 @@ public class RulesTest {
     }
 
     @Test
-    public void departureAfterArrival_flights_with_departures_after_arrival_are_filtered_off2() {
+    public void departureAfterArrival2_flights_with_departures_after_arrival_are_filtered_off2() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
         flights.add(createFlight(
@@ -106,7 +119,7 @@ public class RulesTest {
     }
 
     @Test
-    public void stayOnGroundOver2Hours_the_normal_flights_remain_unchanged() {
+    public void stayOnGroundOver2Hours_the_normal_flights_are_remain_unchanged() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusMinutes(60),
                 dayFromNow.plusMinutes(90), dayFromNow.plusMinutes(180),
@@ -143,6 +156,47 @@ public class RulesTest {
                 .andThen(rules.departureAfterArrival2)
                 .andThen(rules.stayOnGroundOver2Hours)
                 .filter(flights);
+
+        assertNotEquals(result, flights);
+        assertEquals(2, result.size());
+        assertEquals(flights.get(0), result.get(0));
+        assertEquals(flights.get(1), result.get(1));
+    }
+
+    @Test
+    public void stayOnGroundOver_flights_with_staying_on_the_ground_shorter_than_limit_are_remain_unchanged() {
+        flights.add(createFlight(
+                dayFromNow, dayFromNow.plusHours(1)));
+        flights.add(createFlight(
+                dayFromNow, dayFromNow.plusHours(2),
+                dayFromNow.plusHours(3), dayFromNow.plusHours(5),
+                dayFromNow.plusHours(6), dayFromNow.plusHours(8)
+        ));
+        flights.add(createFlight(
+                dayFromNow, dayFromNow.plusHours(2),
+                dayFromNow.plusHours(5), dayFromNow.plusHours(6)
+        ));
+        long limit = 4;
+        List<Flight> result = rules.stayOnGroundOver(limit, flights);
+
+        assertEquals(result, flights);
+    }
+
+    @Test
+    public void stayOnGroundOver_flights_with_staying_on_the_ground_more_limit_are_filtered_off() {
+        flights.add(createFlight(
+                dayFromNow, dayFromNow.plusHours(1)));
+        flights.add(createFlight(
+                dayFromNow, dayFromNow.plusHours(2),
+                dayFromNow.plusHours(3), dayFromNow.plusHours(5),
+                dayFromNow.plusHours(6), dayFromNow.plusHours(8)
+        ));
+        flights.add(createFlight(
+                dayFromNow, dayFromNow.plusHours(2),
+                dayFromNow.plusHours(5), dayFromNow.plusHours(6)
+        ));
+        long limit = 3;
+        List<Flight> result = rules.stayOnGroundOver(limit, flights);
 
         assertNotEquals(result, flights);
         assertEquals(2, result.size());
