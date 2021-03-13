@@ -1,7 +1,5 @@
 package com.gridnine.testing;
 
-import org.w3c.dom.ls.LSOutput;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,18 +38,13 @@ public class Rules {
         @Override
         public List<Flight> filter(List<Flight> flights) {
             return flights.stream()
-                    .map(f -> removeFlightsWithDepInPast(f))
-                    .filter(f -> !f.getSegments().isEmpty())//убираем flight с пустыми списками
+                    .filter(f -> noneDepartureInPast(f))
                     .collect(toList());
         }
     };
 
-    private Flight removeFlightsWithDepInPast(Flight flight) {
-        List<Segment> list = flight.getSegments()
-                .stream()
-                .filter(s -> s.getDepartureDate().isAfter(now))
-                .collect(toList());
-        return new Flight(list);
+    private boolean noneDepartureInPast(Flight flight) {
+        return flight.getSegments().stream().allMatch(s -> s.getDepartureDate().isAfter(now));
     }
 
     /**2) фильтрование полетов с вылетами раньше прилетов*/
