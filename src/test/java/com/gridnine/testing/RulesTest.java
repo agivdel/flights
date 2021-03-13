@@ -63,4 +63,42 @@ public class RulesTest {
         assertEquals(1, result.size());
         assertEquals(dayFromNow.plusHours(1), result.get(0).getSegments().get(0).getArrivalDate());
     }
+
+    @Test
+    public void departureAfterArrival_the_normal_flights_remain_unchanged() {
+        flights.add(createFlight(dayFromNow, dayFromNow.plusHours(1)));
+        List<Flight> result = rules.departureAfterArrival.filter(flights);
+
+        assertEquals(result, flights);
+    }
+
+    @Test
+    public void departureAfterArrival_flights_with_departures_after_arrival_are_filtered_off() {
+        flights.add(createFlight(dayFromNow, dayFromNow.plusHours(1)));
+        flights.add(createFlight(dayFromNow, dayFromNow.minusDays(2)));
+        List<Flight> result = rules.departureAfterArrival.filter(flights);
+
+        assertNotEquals(result, flights);
+        assertEquals(1, result.size());
+        assertEquals(dayFromNow.plusHours(1), result.get(0).getSegments().get(0).getArrivalDate());
+    }
+
+    @Test
+    public void departureAfterArrival_the_normal_flights_remain_unchanged2() {
+        flights.add(createFlight(dayFromNow, dayFromNow.plusHours(1)));
+        List<Flight> result = rules.departureAfterArrival2.filter(flights);
+
+        assertEquals(result, flights);
+    }
+
+    @Test
+    public void departureAfterArrival_flights_with_departures_after_arrival_are_filtered_off2() {
+        flights.add(createFlight(dayFromNow, dayFromNow.plusHours(1)));
+        flights.add(createFlight(dayFromNow, dayFromNow.minusDays(2)));
+        List<Flight> result = rules.departureAfterArrival2.filter(flights);
+
+        assertNotEquals(result, flights);
+        assertEquals(1, result.size());
+        assertEquals(dayFromNow.plusHours(1), result.get(0).getSegments().get(0).getArrivalDate());
+    }
 }
