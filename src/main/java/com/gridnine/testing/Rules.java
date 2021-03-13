@@ -34,7 +34,7 @@ public class Rules {
         }
     };
 
-    private List<Flight> iterateAndRemoveFlightIf(Predicate<Segment> predicate, List<Flight> flights) {
+    public List<Flight> iterateAndRemoveFlightIf(Predicate<Segment> predicate, List<Flight> flights) {
         List<Flight> resultFlights = new ArrayList<>(flights);
         Iterator<Flight> iterator = resultFlights.iterator();
         while (iterator.hasNext()) {
@@ -71,7 +71,7 @@ public class Rules {
         }
     };
 
-    private List<Flight> streamAndRemoveFlightIf(Predicate<Segment> predicate, List<Flight> flights) {
+    public List<Flight> streamAndRemoveFlightIf(Predicate<Segment> predicate, List<Flight> flights) {
         return flights.stream()
                 .filter(f -> f.getSegments()
                 .stream()
