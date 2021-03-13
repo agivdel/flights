@@ -22,7 +22,7 @@ public class FlightBuilder {
                 //A flight departing in the past
                 createFlight(
                         threeDaysFromNow.minusDays(6), threeDaysFromNow),
-                //A flight that departs before it arrives
+                //A flight that departs after it arrives
                 createFlight(
                         threeDaysFromNow, threeDaysFromNow.minusHours(6)),
                 //A flight with more than two hours ground time
