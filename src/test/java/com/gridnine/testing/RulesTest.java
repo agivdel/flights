@@ -10,17 +10,9 @@ import java.util.List;
 
 public class RulesTest {
     private final LocalDateTime dayFromNow = LocalDateTime.now().plusDays(1);
-    private final List<Flight> flights = new ArrayList<>();
+    private final LocalDateTime threeDaysFromNow = LocalDateTime.now().plusDays(3);
+    private List<Flight> flights = new ArrayList<>();
     private final Rules rules = new Rules();
-
-
-    private static Flight createFlight(final LocalDateTime... dates) {
-        List<Segment> segments = new ArrayList<>(dates.length / 2);
-        for (int i = 0; i < dates.length - 1; i += 2) {
-            segments.add(new Segment(dates[i], dates[i + 1]));
-        }
-        return new Flight(segments);
-    }
 
     @Test
     public void filterFlightWithDepInPast_the_normal_flights_remain_unchanged() {
@@ -143,5 +135,29 @@ public class RulesTest {
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
         assertEquals(dayFromNow.plusHours(1), result.get(0).getSegments().get(0).getArrivalDate());
+    }
+
+    @Test
+    public void combine_some_filters() {
+        flights = FlightBuilder.createFlights();
+        List<Flight> result = rules.departureInPast2
+                .andThen(rules.departureAfterArrival2)
+                .andThen(rules.stayOnGroundOver2Hours)
+                .filter(flights);
+
+        assertNotEquals(result, flights);
+        assertEquals(2, result.size());
+        assertEquals(threeDaysFromNow.plusHours(2), result.get(0).getSegments().get(0).getArrivalDate());
+        assertEquals(threeDaysFromNow.plusHours(2), result.get(1).getSegments().get(0).getArrivalDate());
+        assertEquals(threeDaysFromNow.plusHours(5), result.get(1).getSegments().get(1).getArrivalDate());
+    }
+
+
+    private static Flight createFlight(final LocalDateTime... dates) {
+        List<Segment> segments = new ArrayList<>(dates.length / 2);
+        for (int i = 0; i < dates.length - 1; i += 2) {
+            segments.add(new Segment(dates[i], dates[i + 1]));
+        }
+        return new Flight(segments);
     }
 }
