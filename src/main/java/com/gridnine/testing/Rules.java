@@ -55,7 +55,7 @@ public class Rules {
     public final Rule<List<Flight>, List<Flight>> departureInPastStream = new Rule<List<Flight>, List<Flight>>() {
         @Override
         public List<Flight> filter(List<Flight> flights) {
-            Predicate<Segment> predicate = s -> s.getDepartureDate().isAfter(now);
+            Predicate<Segment> predicate = s -> s.getDepartureDate().isBefore(now);
             return streamAndRemoveFlightIf(predicate, flights);
         }
     };
@@ -66,7 +66,7 @@ public class Rules {
     final Rule<List<Flight>, List<Flight>> departureAfterArrivalStream = new Rule<List<Flight>, List<Flight>>() {
         @Override
         public List<Flight> filter(List<Flight> flights) {
-            Predicate<Segment> predicate = s -> s.getDepartureDate().isBefore(s.getArrivalDate());
+            Predicate<Segment> predicate = s -> s.getDepartureDate().isAfter(s.getArrivalDate());
             return streamAndRemoveFlightIf(predicate, flights);
         }
     };
@@ -75,7 +75,7 @@ public class Rules {
         return flights.stream()
                 .filter(f -> f.getSegments()
                 .stream()
-                .allMatch(predicate))
+                .noneMatch(predicate))
                 .collect(toList());
     }
 

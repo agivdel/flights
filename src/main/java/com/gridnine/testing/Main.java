@@ -7,21 +7,33 @@ public class Main {
         List<Flight> flights = FlightBuilder.createFlights();
         System.out.println("flights before filter: " + flights);
         Rules rules = new Rules();
+        List<Flight> result;
 
         //1. вылет до текущего момента времени
-        List<Flight> filteredFlights1_1 = rules.filterFlight(flights);
-        System.out.println("flights after filter: " + filteredFlights1_1);
+        result = rules.departureInPastIterator.filter(flights);
+        System.out.println("\nflights without departures in the past: " + result);
 
-        List<Flight> filteredFlights1_2 = rules.departureInPast2.filter(flights);
-        System.out.println("flights after filter: " + filteredFlights1_2);
+        result = rules.departureInPastStream.filter(flights);
+        System.out.println("\nflights without departures in the past: " + result);
 
-        //2. имеются сегменты с датой прилёта раньше даты вылета
-        List<Flight> filteredFlights2_1 = rules.removeDepartureBeforeArrival.filter(flights);
-        System.out.println("flights after filter: " + filteredFlights2_1);
+        //2. имеются сегменты с датой вылета позже даты вылета
+        result = rules.departureAfterArrivalIterator.filter(flights);
+        System.out.println("\nflights without departures after arrival: " + result);
 
         //3. общее время, проведённое на земле превышает два часа
-        // (время на земле — это интервал между прилётом одного сегмента
-        // и вылетом следующего за ним)
+        result = rules.stayOnGroundOverIterator(2, flights);
+        System.out.println("\nwithout flights with a total time on ground 2 hours and more: " + result);
 
+
+        //4. применение нескольких фильтров одновременно
+        result = rules.departureInPastStream
+                .andThen(rules.departureAfterArrivalStream)
+                .andThen(rules.stayOnGroundOver2HoursIterator)
+                .filter(flights);
+        System.out.println("\nflights after working the several filters: " + result);
+
+        //5. имеются полеты с общем временем на земле более определенного значения
+
+        System.out.println("\nwithout flights with a total time on the ground 1 hour and less: " + result);
     }
 }
