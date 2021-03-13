@@ -12,8 +12,8 @@ import java.util.function.Predicate;
 
 public class Rules {
     public static final LocalDateTime now = LocalDateTime.now();
-    public final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
-    public final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
+    public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
+    public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
 
     /**
      * 1.1) удаление полетов с вылетами в будущем: вариант №1
@@ -21,7 +21,7 @@ public class Rules {
     public final Rule<List<Flight>, List<Flight>> departureInPastIterator = new Rule<List<Flight>, List<Flight>>() {
         @Override
         public List<Flight> filter(List<Flight> flights) {
-            return iterateAndRemoveFlightIf(departureInPast, flights);
+            return removeFlightIf(departureInPast, flights);
         }
     };
 
@@ -31,11 +31,11 @@ public class Rules {
     public final Rule<List<Flight>, List<Flight>> departureAfterArrivalIterator = new Rule<List<Flight>, List<Flight>>() {
         @Override
         public List<Flight> filter(List<Flight> flights) {
-            return iterateAndRemoveFlightIf(departureAfterArrival, flights);
+            return removeFlightIf(departureAfterArrival, flights);
         }
     };
 
-    public List<Flight> iterateAndRemoveFlightIf(Predicate<Segment> predicate, List<Flight> flights) {
+    public List<Flight> removeFlightIf(Predicate<Segment> predicate, List<Flight> flights) {
         List<Flight> resultFlights = new ArrayList<>(flights);
         Iterator<Flight> iterator = resultFlights.iterator();
         while (iterator.hasNext()) {
@@ -49,7 +49,7 @@ public class Rules {
         return resultFlights;
     }
 
-    public Rule<List<Flight>, List<Flight>> removeFlightIf(Predicate<Segment> predicate) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIf(Predicate<Segment> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights1) {
@@ -92,8 +92,26 @@ public class Rules {
         }
     };
 
-    public List<Flight> stayOnGroundOverIterator(long limit, List<Flight> flights) {
-        final Rule<List<Flight>, List<Flight>> stayOnGroundOver2Hours = new Rule<List<Flight>, List<Flight>>() {
+    public List<Flight> removeFlightIfOnGroundMoreThan(long limit, List<Flight> flights) {
+        List<Flight> resultFlights = new ArrayList<>(flights);
+        Iterator<Flight> iterator = resultFlights.iterator();
+        while (iterator.hasNext()) {
+            Flight flight = iterator.next();
+            long time = 0;
+            LocalDateTime from = resultFlights.get(0).getSegments().get(0).getDepartureDate();//чтобы для первого segment время на земле = 0
+            for (Segment segment : flight.getSegments()) {
+                time += ChronoUnit.HOURS.between(from, segment.getDepartureDate());
+                from = segment.getArrivalDate();
+                if (time >= limit) {
+                    iterator.remove();
+                }
+            }
+        }
+        return resultFlights;
+    }
+
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfOnGroundMoreThan(Predicate<Long> predicate) {
+        return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
                 List<Flight> resultFlights = new ArrayList<>(flights);
@@ -105,7 +123,7 @@ public class Rules {
                     for (Segment segment : flight.getSegments()) {
                         time += ChronoUnit.HOURS.between(from, segment.getDepartureDate());
                         from = segment.getArrivalDate();
-                        if (time >= limit) {
+                        if (predicate.test(time)) {
                             iterator.remove();
                         }
                     }
@@ -113,7 +131,27 @@ public class Rules {
                 return resultFlights;
             }
         };
+    }
 
-        return stayOnGroundOver2Hours.filter(flights);
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfOnGroundLessThan(Predicate<Long> predicate) {
+        return new Rule<List<Flight>, List<Flight>>() {
+            @Override
+            public List<Flight> filter(List<Flight> flights) {
+                List<Flight> resultFlights = new ArrayList<>(flights);
+                Iterator<Flight> iterator = resultFlights.iterator();
+                while (iterator.hasNext()) {
+                    Flight flight = iterator.next();
+                    LocalDateTime from = resultFlights.get(0).getSegments().get(0).getDepartureDate();//чтобы для первого segment время на земле = 0
+                    for (Segment segment : flight.getSegments()) {
+                        long time = ChronoUnit.HOURS.between(from, segment.getDepartureDate());
+                        from = segment.getArrivalDate();
+                        if (predicate.test(time)) {
+                            iterator.remove();
+                        }
+                    }
+                }
+                return resultFlights;
+            }
+        };
     }
 }
