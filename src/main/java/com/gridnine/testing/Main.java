@@ -1,5 +1,9 @@
 package com.gridnine.testing;
 
+import com.gridnine.testing.entities.Flight;
+import com.gridnine.testing.rules.Rules;
+import com.gridnine.testing.util.FlightBuilder;
+
 import java.util.List;
 
 public class Main {
@@ -13,9 +17,6 @@ public class Main {
         result = rules.departureInPastIterator.filter(flights);
         System.out.println("\nflights without departures in the past: " + result);
 
-        result = rules.departureInPastStream.filter(flights);
-        System.out.println("\nflights without departures in the past: " + result);
-
         //2. имеются сегменты с датой вылета позже даты вылета
         result = rules.departureAfterArrivalIterator.filter(flights);
         System.out.println("\nflights without departures after arrival: " + result);
@@ -26,8 +27,8 @@ public class Main {
 
 
         //4. применение нескольких фильтров одновременно
-        result = rules.departureInPastStream
-                .andThen(rules.departureAfterArrivalStream)
+        result = rules.departureInPastIterator
+                .andThen(rules.departureAfterArrivalIterator)
                 .andThen(rules.stayOnGroundOver2HoursIterator)
                 .filter(flights);
         System.out.println("\nflights after working the several filters: " + result);

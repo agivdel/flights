@@ -1,4 +1,7 @@
-package com.gridnine.testing;
+package com.gridnine.testing.util;
+
+import com.gridnine.testing.entities.Flight;
+import com.gridnine.testing.entities.Segment;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,7 +12,7 @@ import java.util.List;
  * Factory class to get sample list of flights.
  */
 public class FlightBuilder {
-    static List<Flight> createFlights() {
+    public static List<Flight> createFlights() {
         LocalDateTime threeDaysFromNow = LocalDateTime.now().plusDays(3);
         return Arrays.asList(
                 //A normal flight with two hour duration

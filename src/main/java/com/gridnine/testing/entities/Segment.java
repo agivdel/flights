@@ -1,4 +1,4 @@
-package com.gridnine.testing;
+package com.gridnine.testing.entities;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,16 +11,16 @@ public class Segment {
     private final LocalDateTime departureDate;
     private final LocalDateTime arrivalDate;
 
-    Segment(LocalDateTime departure, LocalDateTime arrivalDate) {
+    public Segment(LocalDateTime departure, LocalDateTime arrivalDate) {
         this.departureDate = Objects.requireNonNull(departure);
         this.arrivalDate = Objects.requireNonNull(arrivalDate);
     }
 
-    LocalDateTime getDepartureDate() {
+    public LocalDateTime getDepartureDate() {
         return departureDate;
     }
 
-    LocalDateTime getArrivalDate() {
+    public LocalDateTime getArrivalDate() {
         return arrivalDate;
     }
 
