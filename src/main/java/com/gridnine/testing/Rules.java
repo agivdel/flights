@@ -2,19 +2,20 @@ package com.gridnine.testing;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
 public class Rules {
     public static final LocalDateTime now = LocalDateTime.now();
 
+    /**1) фильтрование полетов с вылетами в будущем: вариант №1*/
     public List<Flight> filterFlight(List<Flight> flights) {
         return departureInPast.filter(flights);
     }
 
-
-    /**вариант №1*/
     private final Rule<List<Flight>, List<Flight>> departureInPast = new Rule<List<Flight>, List<Flight>>() {
         @Override
         public List<Flight> filter(List<Flight> flights) {
@@ -37,7 +38,7 @@ public class Rules {
     };
 
 
-    /**вариант №2*/
+    /**1) фильтрование полетов с вылетами в будущем: вариант №2*/
     final Rule<List<Flight>, List<Flight>> departureInPast2 = new Rule<List<Flight>, List<Flight>>() {
         @Override
         public List<Flight> filter(List<Flight> flights) {
@@ -55,4 +56,22 @@ public class Rules {
                 .collect(toList());
         return new Flight(list);
     }
+
+    /**2) фильтрование полетов с вылетами раньше прилетов*/
+    final Rule<List<Flight>, List<Flight>> removeDepartureBeforeArrival = new Rule<List<Flight>, List<Flight>>() {
+        @Override
+        public List<Flight> filter(List<Flight> flights) {
+            List<Flight> resultFlights = new ArrayList<>(flights);
+            Iterator<Flight> iterator = resultFlights.iterator();
+            while (iterator.hasNext()) {
+                Flight flight = iterator.next();
+                for (Segment segment : flight.getSegments()) {
+                    if (segment.getDepartureDate().isAfter(segment.getArrivalDate())) {
+                        iterator.remove();
+                    }
+                }
+            }
+            return resultFlights;
+        }
+    };
 }
