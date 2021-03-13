@@ -140,16 +140,20 @@ public class RulesTest {
     @Test
     public void combine_some_filters() {
         flights = FlightBuilder.createFlights();
+        Flight firstFlight = flights.get(0);
+        Flight secondFlight = flights.get(1);
+
         List<Flight> result = rules.departureInPast2
                 .andThen(rules.departureAfterArrival2)
                 .andThen(rules.stayOnGroundOver2Hours)
                 .filter(flights);
+        Flight firstResult = result.get(0);
+        Flight secondResult = result.get(1);
 
         assertNotEquals(result, flights);
         assertEquals(2, result.size());
-        assertEquals(threeDaysFromNow.plusHours(2), result.get(0).getSegments().get(0).getArrivalDate());
-        assertEquals(threeDaysFromNow.plusHours(2), result.get(1).getSegments().get(0).getArrivalDate());
-        assertEquals(threeDaysFromNow.plusHours(5), result.get(1).getSegments().get(1).getArrivalDate());
+        assertEquals(firstFlight, firstResult);
+        assertEquals(secondFlight, secondResult);
     }
 
 
