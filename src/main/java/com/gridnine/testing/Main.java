@@ -10,14 +10,11 @@ public class Main {
         List<Flight> result;
 
         //1. вылет до текущего момента времени
-        result = rules.departureInPastIterator.filter(flights);
-        System.out.println("\nflights without departures in the past: " + result);
-
         result = rules.departureInPastStream.filter(flights);
         System.out.println("\nflights without departures in the past: " + result);
 
         //2. имеются сегменты с датой вылета позже даты вылета
-        result = rules.departureAfterArrivalIterator.filter(flights);
+        result = rules.departureAfterArrivalStream.filter(flights);
         System.out.println("\nflights without departures after arrival: " + result);
 
         //3. общее время, проведённое на земле превышает два часа

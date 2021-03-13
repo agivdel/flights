@@ -14,29 +14,6 @@ public class RulesTest {
     private final Rules rules = new Rules();
 
     @Test
-    public void departureInPastIterator_the_normal_flights_are_remain_unchanged() {
-        flights.add(createFlight(
-                dayFromNow, dayFromNow.plusHours(1)));
-        List<Flight> result = rules.departureInPastIterator.filter(flights);
-
-        assertEquals(result, flights);
-    }
-
-    @Test
-    public void departureInPastIterator_flights_with_departures_in_the_past_are_filtered_off() {
-        flights.add(createFlight(
-                dayFromNow, dayFromNow.plusHours(1)));
-        flights.add(createFlight(
-                dayFromNow, dayFromNow.plusHours(2),
-                dayFromNow.minusDays(4), dayFromNow.minusDays(4).plusHours(6)));
-        List<Flight> result = rules.departureInPastIterator.filter(flights);
-
-        assertNotEquals(result, flights);
-        assertEquals(1, result.size());
-        assertEquals(flights.get(0), result.get(0));
-    }
-
-    @Test
     public void departureInPastStream_the_normal_flights_are_remain_unchanged2() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
@@ -53,28 +30,6 @@ public class RulesTest {
                 dayFromNow, dayFromNow.plusHours(2),
                 dayFromNow.minusDays(4), dayFromNow.minusDays(4).plusHours(6)));
         List<Flight> result = rules.departureInPastStream.filter(flights);
-
-        assertNotEquals(result, flights);
-        assertEquals(1, result.size());
-        assertEquals(flights.get(0), result.get(0));
-    }
-
-    @Test
-    public void departureAfterArrivalIterator_the_normal_flights_are_remain_unchanged() {
-        flights.add(createFlight(
-                dayFromNow, dayFromNow.plusHours(1)));
-        List<Flight> result = rules.departureAfterArrivalIterator.filter(flights);
-
-        assertEquals(result, flights);
-    }
-
-    @Test
-    public void departureAfterArrivalIterator_flights_with_departures_after_arrival_are_filtered_off() {
-        flights.add(createFlight(
-                dayFromNow, dayFromNow.plusHours(1)));
-        flights.add(createFlight(
-                dayFromNow, dayFromNow.minusDays(2)));
-        List<Flight> result = rules.departureAfterArrivalIterator.filter(flights);
 
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
