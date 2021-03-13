@@ -13,27 +13,23 @@ public class FlightBuilder {
         LocalDateTime threeDaysFromNow = LocalDateTime.now().plusDays(3);
         return Arrays.asList(
                 //A normal flight with two hour duration
-//                createFlight(
-//                        threeDaysFromNow, threeDaysFromNow.plusHours(2)),
+                createFlight(
+                        threeDaysFromNow, threeDaysFromNow.plusHours(2)),
                 //A normal multi segment flight
-//                createFlight(
-//                        threeDaysFromNow, threeDaysFromNow.plusHours(2),
-//                        threeDaysFromNow.plusHours(3), threeDaysFromNow.plusHours(5)),
+                createFlight(
+                        threeDaysFromNow, threeDaysFromNow.plusHours(2),
+                        threeDaysFromNow.plusHours(3), threeDaysFromNow.plusHours(5)),
                 //A flight departing in the past
-                //1. вылет до текущего момента времени
                 createFlight(
                         threeDaysFromNow.minusDays(6), threeDaysFromNow),
                 //A flight that departs before it arrives
-                //2. имеются сегменты с датой прилёта раньше даты вылета
-//                createFlight(
-//                        threeDaysFromNow, threeDaysFromNow.minusHours(6)),
-//                //A flight with more than two hours ground time
-//                //3. общее время, проведённое на земле превышает два часа
-//                createFlight(
-//                        threeDaysFromNow, threeDaysFromNow.plusHours(2),
-//                        threeDaysFromNow.plusHours(5), threeDaysFromNow.plusHours(6)),
-//                //Another flight with more than two hours ground time
-//                //3. общее время, проведённое на земле превышает два часа
+                createFlight(
+                        threeDaysFromNow, threeDaysFromNow.minusHours(6)),
+                //A flight with more than two hours ground time
+                createFlight(
+                        threeDaysFromNow, threeDaysFromNow.plusHours(2),
+                        threeDaysFromNow.plusHours(5), threeDaysFromNow.plusHours(6)),
+                //Another flight with more than two hours ground time
                 createFlight(
                         threeDaysFromNow, threeDaysFromNow.plusHours(2),
                         threeDaysFromNow.plusHours(3), threeDaysFromNow.plusHours(4),
