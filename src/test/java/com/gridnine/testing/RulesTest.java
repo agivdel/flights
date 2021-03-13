@@ -10,7 +10,6 @@ import java.util.List;
 
 public class RulesTest {
     private final LocalDateTime dayFromNow = LocalDateTime.now().plusDays(1);
-    private final LocalDateTime threeDaysFromNow = LocalDateTime.now().plusDays(3);
     private List<Flight> flights = new ArrayList<>();
     private final Rules rules = new Rules();
 
@@ -36,7 +35,7 @@ public class RulesTest {
 
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
-        assertEquals(dayFromNow.plusHours(1), result.get(0).getSegments().get(0).getArrivalDate());
+        assertEquals(flights.get(0), result.get(0));
     }
 
     @Test
@@ -59,7 +58,7 @@ public class RulesTest {
 
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
-        assertEquals(dayFromNow.plusHours(1), result.get(0).getSegments().get(0).getArrivalDate());
+        assertEquals(flights.get(0), result.get(0));
     }
 
     @Test
@@ -81,7 +80,7 @@ public class RulesTest {
 
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
-        assertEquals(dayFromNow.plusHours(1), result.get(0).getSegments().get(0).getArrivalDate());
+        assertEquals(flights.get(0), result.get(0));
     }
 
     @Test
@@ -103,7 +102,7 @@ public class RulesTest {
 
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
-        assertEquals(dayFromNow.plusHours(1), result.get(0).getSegments().get(0).getArrivalDate());
+        assertEquals(flights.get(0), result.get(0));
     }
 
     @Test
@@ -134,26 +133,21 @@ public class RulesTest {
 
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
-        assertEquals(dayFromNow.plusHours(1), result.get(0).getSegments().get(0).getArrivalDate());
+        assertEquals(flights.get(0), result.get(0));
     }
 
     @Test
     public void combine_some_filters() {
         flights = FlightBuilder.createFlights();
-        Flight firstFlight = flights.get(0);
-        Flight secondFlight = flights.get(1);
-
         List<Flight> result = rules.departureInPast2
                 .andThen(rules.departureAfterArrival2)
                 .andThen(rules.stayOnGroundOver2Hours)
                 .filter(flights);
-        Flight firstResult = result.get(0);
-        Flight secondResult = result.get(1);
 
         assertNotEquals(result, flights);
         assertEquals(2, result.size());
-        assertEquals(firstFlight, firstResult);
-        assertEquals(secondFlight, secondResult);
+        assertEquals(flights.get(0), result.get(0));
+        assertEquals(flights.get(1), result.get(1));
     }
 
 
