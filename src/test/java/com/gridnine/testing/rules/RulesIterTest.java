@@ -15,7 +15,8 @@ import java.util.List;
 public class RulesIterTest {
     private final LocalDateTime dayFromNow = LocalDateTime.now().plusDays(1);
     private List<Flight> flights = new ArrayList<>();
-    private RulesIter rules = new RulesIter();
+//    private final RulesIter rules = new RulesIter();
+    private final RulesStream rules = new RulesStream();
 
     @Test
     public void removeFlightIf_departureInPast_the_normal_flights_are_remain_unchanged() {
