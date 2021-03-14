@@ -15,7 +15,7 @@ public class RulesIter {
     public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIf(Predicate<Segment> predicate) {
+    public Rule<List<Flight>, List<Flight>> removeFlightIf(Predicate<Segment> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
@@ -63,7 +63,7 @@ public class RulesIter {
         return result;
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfOnGroundMoreThan(Predicate<Long> predicate) {
+    public Rule<List<Flight>, List<Flight>> removeFlightIfHoursOnGround(Predicate<Long> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
@@ -86,7 +86,7 @@ public class RulesIter {
         };
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfOnGroundLessThan(Predicate<Long> predicate) {
+    public Rule<List<Flight>, List<Flight>> removeFlightIfOnGroundLessThan(Predicate<Long> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
