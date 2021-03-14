@@ -6,17 +6,16 @@ import com.gridnine.testing.util.FlightBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static com.gridnine.testing.rules.RulesIter.*;
+import static com.gridnine.testing.rules.Rules.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RulesIterTest {
+public class RulesTest {
     private final LocalDateTime dayFromNow = LocalDateTime.now().plusDays(1);
     private List<Flight> flights = new ArrayList<>();
-//    private final RulesIter rules = new RulesIter();
-    private final RulesStream rules = new RulesStream();
+    private final Rules rules = new Rules();
 
     @Test
     public void removeFlightIf_departureInPast_the_normal_flights_are_remain_unchanged() {

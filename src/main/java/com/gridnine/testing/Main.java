@@ -1,19 +1,18 @@
 package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
-import com.gridnine.testing.rules.RulesStream;
+import com.gridnine.testing.rules.Rules;
 import com.gridnine.testing.util.FlightBuilder;
 
 import java.util.List;
 
-import static com.gridnine.testing.rules.RulesStream.*;
+import static com.gridnine.testing.rules.Rules.*;
 
 public class Main {
     public static void main(String[] args) {
         List<Flight> flights = FlightBuilder.createFlights();
         System.out.println("flights before filter: " + flights);
-        RulesStream rules = new RulesStream();
-//        RulesStream rules = new RulesIter();
+        Rules rules = new Rules();
         List<Flight> result;
 
         //1. вылет до текущего момента времени

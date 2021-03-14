@@ -10,7 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class RulesIter {
+import static java.util.stream.Collectors.toList;
+
+public class Rules {
     public static final LocalDateTime now = LocalDateTime.now();
     public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
@@ -34,6 +36,45 @@ public class RulesIter {
 
         };
     }
+
+//    public Rule<List<Flight>, List<Flight>> removeFlightIf(Predicate<Segment> predicate) {
+//        return new Rule<List<Flight>, List<Flight>>() {
+//            @Override
+//            public List<Flight> filter(List<Flight> flights) {
+//                return flights.stream()
+//                        .filter(f -> f.getSegments().stream().noneMatch(predicate))
+//                        .collect(toList());
+//            }
+//        };
+//    }
+
+    //            BiFunction<Segment, LocalDateTime> accumulator = new BiFunction() {
+//                @Override
+//                public Object apply(Object o, Object o2) {
+//                    return null;
+//                }
+//            };
+//
+//            BinaryOperator<> accumulator = new BinaryOperator() {
+//                @Override
+//                public Object apply(Object o, Object o2) {
+//                    return null;
+//                }
+//            };
+//
+//            BiFunction<LocalDateTime, LocalDateTime, Long> combiner = ChronoUnit.HOURS::between;
+//
+//            Long stream = resultFlights.stream()
+//                    .map(f -> f.getSegments()
+//                            .stream()
+//                            .reduce(0, combiner)
+//                            .
+//                    )
+//
+//            Stream<Object> stream = resultFlights.stream().map(f -> f.getSegments().stream().map(s -> s.getDepartureDate()));
+
+
+
 
     interface Handler<T, R> {
         R run(T t);
