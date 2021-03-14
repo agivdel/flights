@@ -19,7 +19,7 @@ public class RulesTest {
     private final Rules rules = new Rules();
 
     @Test
-    public void departureInPastStream_the_normal_flights_are_remain_unchanged2() {
+    public void removeFlightIf_departureInPast_the_normal_flights_are_remain_unchanged2() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
         List<Flight> result = removeFlightIf(departureInPast).filter(flights);
@@ -28,7 +28,7 @@ public class RulesTest {
     }
 
     @Test
-    public void departureInPastStream_flights_with_departures_in_the_past_are_filtered_off() {
+    public void removeFlightIf_departureInPast_flights_with_departures_in_the_past_are_filtered_off() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
         flights.add(createFlight(
@@ -42,7 +42,7 @@ public class RulesTest {
     }
 
     @Test
-    public void departureAfterArrivalStream_the_normal_flights_are_remain_unchanged2() {
+    public void removeFlightIf_departureAfterArrival_the_normal_flights_are_remain_unchanged() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
         List<Flight> result = removeFlightIf(departureAfterArrival).filter(flights);
@@ -51,7 +51,7 @@ public class RulesTest {
     }
 
     @Test
-    public void departureAfterArrivalStream_flights_with_departures_after_arrival_are_filtered_off2() {
+    public void removeFlightIf_departureAfterArrival_flights_with_departures_after_arrival_are_filtered_off() {
         flights.add(createFlight(
                 dayFromNow, dayFromNow.plusHours(1)));
         flights.add(createFlight(

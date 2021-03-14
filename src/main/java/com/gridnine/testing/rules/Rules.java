@@ -8,7 +8,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -38,6 +41,34 @@ public class Rules {
         @Override
         public List<Flight> filter(List<Flight> flights) {
             List<Flight> resultFlights = new ArrayList<>(flights);
+
+//            BiFunction<Segment, LocalDateTime> accumulator = new BiFunction() {
+//                @Override
+//                public Object apply(Object o, Object o2) {
+//                    return null;
+//                }
+//            };
+//
+//            BinaryOperator<> accumulator = new BinaryOperator() {
+//                @Override
+//                public Object apply(Object o, Object o2) {
+//                    return null;
+//                }
+//            };
+//
+//            BiFunction<LocalDateTime, LocalDateTime, Long> combiner = ChronoUnit.HOURS::between;
+//
+//            Long stream = resultFlights.stream()
+//                    .map(f -> f.getSegments()
+//                            .stream()
+//                            .reduce(0, combiner)
+//                            .
+//                    )
+//
+//            Stream<Object> stream = resultFlights.stream().map(f -> f.getSegments().stream().map(s -> s.getDepartureDate()));
+
+
+
             Iterator<Flight> iterator = resultFlights.iterator();
             while (iterator.hasNext()) {
                 Flight flight = iterator.next();
