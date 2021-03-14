@@ -2,18 +2,17 @@ package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
 import com.gridnine.testing.entities.Segment;
-import com.gridnine.testing.rules.Rules;
 import com.gridnine.testing.util.FlightBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static com.gridnine.testing.rules.Rules.*;
+import static com.gridnine.testing.rules.RulesIter.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RulesTest {
+public class RulesIterTest {
     private final LocalDateTime dayFromNow = LocalDateTime.now().plusDays(1);
     private List<Flight> flights = new ArrayList<>();
 

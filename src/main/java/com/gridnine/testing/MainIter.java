@@ -5,9 +5,9 @@ import com.gridnine.testing.util.FlightBuilder;
 
 import java.util.List;
 
-import static com.gridnine.testing.rules.Rules.*;
+import static com.gridnine.testing.rules.RulesIter.*;
 
-public class Main {
+public class MainIter {
     public static void main(String[] args) {
         List<Flight> flights = FlightBuilder.createFlights();
         System.out.println("flights before filter: " + flights);

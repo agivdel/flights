@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class Rules {
+public class RulesIter {
     public static final LocalDateTime now = LocalDateTime.now();
     public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
@@ -31,6 +31,7 @@ public class Rules {
                 }
                 return result;
             }
+
         };
     }
 
