@@ -1,7 +1,6 @@
 package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
-import com.gridnine.testing.rules.Rules;
 import com.gridnine.testing.util.FlightBuilder;
 
 import java.util.List;
@@ -12,7 +11,6 @@ public class Main {
     public static void main(String[] args) {
         List<Flight> flights = FlightBuilder.createFlights();
         System.out.println("flights before filter: " + flights);
-        Rules rules = new Rules();
         List<Flight> result;
 
         //1. вылет до текущего момента времени
