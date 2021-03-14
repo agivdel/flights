@@ -2,21 +2,21 @@ package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
 import com.gridnine.testing.entities.Segment;
-import com.gridnine.testing.rules.Rules;
+import com.gridnine.testing.rules.RulesStream;
 import com.gridnine.testing.util.FlightBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static com.gridnine.testing.rules.Rules.*;
+import static com.gridnine.testing.rules.RulesStream.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RulesTest {
+public class RulesStreamTest {
     private final LocalDateTime dayFromNow = LocalDateTime.now().plusDays(1);
     private List<Flight> flights = new ArrayList<>();
-    private final Rules rules = new Rules();
+    private final RulesStream rulesStream = new RulesStream();
 
     @Test
     public void removeFlightIf_departureInPast_the_normal_flights_are_remain_unchanged2() {
@@ -69,7 +69,7 @@ public class RulesTest {
                 dayFromNow, dayFromNow.plusMinutes(60),
                 dayFromNow.plusMinutes(90), dayFromNow.plusMinutes(180),
                 dayFromNow.plusMinutes(225), dayFromNow.plusMinutes(300)));
-        List<Flight> result = rules.stayOnGroundOver2HoursIterator.filter(flights);
+        List<Flight> result = rulesStream.stayOnGroundOver2HoursIterator.filter(flights);
 
         assertEquals(result, flights);
     }
@@ -87,7 +87,7 @@ public class RulesTest {
                 dayFromNow, dayFromNow.plusHours(2),
                 dayFromNow.plusHours(5), dayFromNow.plusHours(6)
         ));
-        List<Flight> result = rules.stayOnGroundOver2HoursIterator.filter(flights);
+        List<Flight> result = rulesStream.stayOnGroundOver2HoursIterator.filter(flights);
 
         assertNotEquals(result, flights);
         assertEquals(1, result.size());
@@ -99,7 +99,7 @@ public class RulesTest {
         flights = FlightBuilder.createFlights();
         List<Flight> result = removeFlightIf(departureInPast)
                 .andThen(removeFlightIf(departureAfterArrival))
-                .andThen(rules.stayOnGroundOver2HoursIterator)
+                .andThen(rulesStream.stayOnGroundOver2HoursIterator)
                 .filter(flights);
 
         assertNotEquals(result, flights);
@@ -122,7 +122,7 @@ public class RulesTest {
                 dayFromNow.plusHours(5), dayFromNow.plusHours(6)
         ));
         long limit = 4;
-        List<Flight> result = rules.stayOnGroundOverIterator(limit, flights);
+        List<Flight> result = rulesStream.stayOnGroundOverIterator(limit, flights);
 
         assertEquals(result, flights);
     }
@@ -141,7 +141,7 @@ public class RulesTest {
                 dayFromNow.plusHours(5), dayFromNow.plusHours(6)
         ));
         long limit = 3;
-        List<Flight> result = rules.stayOnGroundOverIterator(limit, flights);
+        List<Flight> result = rulesStream.stayOnGroundOverIterator(limit, flights);
 
         assertNotEquals(result, flights);
         assertEquals(2, result.size());

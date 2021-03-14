@@ -1,18 +1,18 @@
 package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
-import com.gridnine.testing.rules.Rules;
+import com.gridnine.testing.rules.RulesStream;
 import com.gridnine.testing.util.FlightBuilder;
 
 import java.util.List;
 
-import static com.gridnine.testing.rules.Rules.*;
+import static com.gridnine.testing.rules.RulesStream.*;
 
-public class Main {
+public class MainStream {
     public static void main(String[] args) {
         List<Flight> flights = FlightBuilder.createFlights();
         System.out.println("flights before filter: " + flights);
-        Rules rules = new Rules();
+        RulesStream rulesStream = new RulesStream();
         List<Flight> result;
 
         //1. вылет до текущего момента времени
@@ -24,14 +24,14 @@ public class Main {
         System.out.println("\nflights without departures after arrival: " + result);
 
         //3. общее время, проведённое на земле превышает два часа
-        result = rules.stayOnGroundOverIterator(2, flights);
+        result = rulesStream.stayOnGroundOverIterator(2, flights);
         System.out.println("\nwithout flights with a total time on ground 2 hours and more: " + result);
 
 
         //4. применение нескольких фильтров одновременно
         result = removeFlightIf(departureInPast)
                 .andThen(removeFlightIf(departureAfterArrival))
-                .andThen(rules.stayOnGroundOver2HoursIterator)
+                .andThen(rulesStream.stayOnGroundOver2HoursIterator)
                 .filter(flights);
         System.out.println("\nflights after working the several filters: " + result);
 

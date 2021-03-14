@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-public class Rules {
+public class RulesStream {
     public static final LocalDateTime now = LocalDateTime.now();
     public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
     public static final Predicate<Segment> departureAfterArrival = s -> s.getDepartureDate().isAfter(s.getArrivalDate());
