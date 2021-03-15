@@ -22,22 +22,22 @@ public class Main {
 
         //раздел фильтров №1: фильтруем полеты на уровне полей класса Segment
         //1. убираем полеты до текущего момента времени
-        result = removeFlightIfDate(departureInPast).filter(flights);
+        result = removeFlightIfDate(departureInPast).fromSource(flights);
         System.out.println("\nflights without departures in the past:");
         result.forEach(System.out::println);
 
         //2. убираем полеты с датой вылета позже даты вылета
-        result = removeFlightIfDate(departureAfterArrival).filter(flights);
+        result = removeFlightIfDate(departureAfterArrival).fromSource(flights);
         System.out.println("\nflights without departures after arrival:");
         result.forEach(System.out::println);
 
         //3. убираем полеты с общим временем на земле свыше определенного значения
-        result = removeFlightIfTotalGroundTime(t -> t >= 2, TimeUnit.HOURS).filter(flights);
+        result = removeFlightIfTotalGroundTime(t -> t >= 2, TimeUnit.HOURS).fromSource(flights);
         System.out.println("\nwithout flights with a total time on ground 2 hours and more:");
         result.forEach(System.out::println);
 
         //4. убираем полеты с общим временем на земле менее определенного значения
-        result = removeFlightIfTotalGroundTime(t -> t < 60, TimeUnit.MINUTES).filter(flights);
+        result = removeFlightIfTotalGroundTime(t -> t < 60, TimeUnit.MINUTES).fromSource(flights);
         System.out.println("\nwithout flights with a total time on ground less 1 hour");
         System.out.println("(in fact, it is only multi segment flights):");
         result.forEach(System.out::println);
@@ -46,7 +46,7 @@ public class Main {
         result = removeFlightIfDate(departureInPast)
                 .andThen(removeFlightIfDate(departureAfterArrival))
                 .andThen(removeFlightIfTotalGroundTime(t -> t >= 2, TimeUnit.HOURS))
-                .filter(flights);
+                .fromSource(flights);
         System.out.println("\nthe normal flights:");
         result.forEach(System.out::println);
 
@@ -54,7 +54,7 @@ public class Main {
 
         //раздел фильтров №2: фильтруем полеты на уровне полей класса Flight
         //6. убираем полеты с числом сегментов более одного
-        result = removeFlightIfSegment(moreOne).filter(flights);
+        result = removeFlightIfSegment(moreOne).fromSource(flights);
         System.out.println("\none segment flights:");
         result.forEach(System.out::println);
 
@@ -62,7 +62,7 @@ public class Main {
         result = removeFlightIfSegment(moreOne)
                 .andThen(removeFlightIfDate(departureInPast))
                 .andThen(removeFlightIfDate(departureAfterArrival))
-                .filter(flights);
+                .fromSource(flights);
         System.out.println("\none segment normal flights:");
         result.forEach(System.out::println);
     }
