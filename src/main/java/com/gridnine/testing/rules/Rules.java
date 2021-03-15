@@ -18,7 +18,6 @@ public class Rules {
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
     public static final Predicate<Flight> notOne = f -> f.getSegments().size() != 1;
     public static final Predicate<Flight> moreThanOne = f -> f.getSegments().size() > 1;
-    public static final Predicate<Flight> empty = f -> f.getSegments().isEmpty();
 
     public static Rule<List<Flight>, List<Flight>> removeFlightIfDate(Predicate<Segment> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {

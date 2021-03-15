@@ -2,6 +2,7 @@ package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
 import com.gridnine.testing.util.FlightBuilder;
+import com.gridnine.testing.util.FlightBuilderEnlarged;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import static com.gridnine.testing.rules.Rules.*;
 
 public class Main {
     public static void main(String[] args) {
-        List<Flight> flights = FlightBuilder.createFlights();
+        List<Flight> flights = FlightBuilderEnlarged.createFlights();
         System.out.println("flights before filter: " + flights);
         List<Flight> result;
 
@@ -51,6 +52,6 @@ public class Main {
         //7. применение нескольких фильтров одновременно
         result = slipFlightIfDate(departureAfterArrival)
                 .filter(flights);
-        System.out.println("\nflights after working the several filters: " + result);
+//        System.out.println("\nflights after working the several filters: " + result);
     }
 }
