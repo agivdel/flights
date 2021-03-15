@@ -1,7 +1,6 @@
 package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
-import com.gridnine.testing.util.FlightBuilder;
 import com.gridnine.testing.util.FlightBuilderEnlarged;
 
 import java.util.List;
@@ -37,14 +36,14 @@ public class Main {
 
         //раздел фильтров №2: фильтруем полеты на уровне полей класса Flight
         //5. убираем полеты с числом сегментов, не равным одному
-        result = removeFlightIfSegment(notOne).filter(flights);
+        result = removeFlightIfSegment(moreOne).filter(flights);
 //        System.out.println("\nflights with the number of segments one and less: " + result);
 
         //6. применение нескольких фильтров одновременно
         result = removeFlightIfDate(departureInPast)
                 .andThen(removeFlightIfDate(departureAfterArrival))
                 .andThen(removeFlightIfHoursOnGroundMore(t -> t >= 2))
-                .andThen(removeFlightIfSegment(notOne))
+                .andThen(removeFlightIfSegment(moreOne))
                 .andThen(removeFlightIfSegment(moreThanOne))
                 .filter(flights);
 //        System.out.println("\nflights after working the several filters: " + result);

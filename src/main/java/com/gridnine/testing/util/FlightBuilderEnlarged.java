@@ -11,15 +11,15 @@ import java.util.List;
 public class FlightBuilderEnlarged {
     private static final LocalDateTime threeDaysFromNow = LocalDateTime.now().plusDays(3);
 
-    public static final Flight normalFlight = createFlight(
+    public static final Flight normalOneSegmentFlight = createFlight(
             threeDaysFromNow, threeDaysFromNow.plusHours(2));
-    public static final Flight normalMultiSegmentFlight = createFlight(
+    public static final Flight oneHourGroundTimeFlight = createFlight(
             threeDaysFromNow, threeDaysFromNow.plusHours(2),
             threeDaysFromNow.plusHours(3), threeDaysFromNow.plusHours(5));
     public static final Flight less1HourGroundTimeFlight = createFlight(
             threeDaysFromNow, threeDaysFromNow.plusMinutes(120),
             threeDaysFromNow.plusMinutes(165), threeDaysFromNow.plusHours(5));
-    public static final Flight departingInPastFlight = createFlight(
+    public static final Flight departureInPastFlight = createFlight(
             threeDaysFromNow.minusDays(6), threeDaysFromNow);
     public static final Flight departureAfterArrivalFlight = createFlight(
             threeDaysFromNow, threeDaysFromNow.minusHours(6));
