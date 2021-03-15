@@ -1,7 +1,7 @@
 package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
-import com.gridnine.testing.util.FlightBuilderEnlarged;
+import com.gridnine.testing.util.FlightBuilder;
 
 import java.util.List;
 
@@ -9,48 +9,55 @@ import static com.gridnine.testing.rules.Rules.*;
 
 public class Main {
     public static void main(String[] args) {
-        List<Flight> flights = FlightBuilderEnlarged.createFlights();
-        System.out.println("flights before filter: " + flights);
+        List<Flight> flights = FlightBuilder.createFlights();
+        System.out.println("flights before filter:");
+        flights.forEach(System.out::println);
         List<Flight> result;
 
         //раздел фильтров №1: фильтруем полеты на уровне полей класса Segment
         //1. убираем вылеты до текущего момента времени
         result = removeFlightIfDate(departureInPast).filter(flights);
-//        System.out.println("\nflights without departures in the past: " + result);
+        System.out.println("\nflights without departures in the past:");
+        result.forEach(System.out::println);
 
         //2. убираем сегменты с датой вылета позже даты вылета
         result = removeFlightIfDate(departureAfterArrival).filter(flights);
-//        System.out.println("\nflights without departures after arrival: " + result);
+        System.out.println("\nflights without departures after arrival:");
+        result.forEach(System.out::println);
 
-        //3. убираем полеты с общим временем на земле свыше определенного значения (два часа)
-        result = removeFlightIfHoursOnGroundMore(t -> t >= 2).filter(flights);
-//        System.out.println("\nwithout flights with a total time on ground 2 hours and more: " + result);
+        //3. убираем полеты с общим временем на земле свыше определенного значения
+        result = removeFlightIfTotalGroundTime(t -> t >= 2).filter(flights);
+        System.out.println("\nwithout flights with a total time on ground 2 hours and more:");
+        result.forEach(System.out::println);
 
+        //4. убираем полеты с общим временем на земле менее определенного значения
+        result = removeFlightIfTotalGroundTime(t -> t < 1).filter(flights);
+        System.out.println("\nwithout flights with a total time on ground less 1 hour");
+        System.out.println("(in fact, it is only multi segment flights):");
+        result.forEach(System.out::println);
 
-        //4. применение нескольких фильтров одновременно
+        //5. применение нескольких фильтров одновременно
         result = removeFlightIfDate(departureInPast)
                 .andThen(removeFlightIfDate(departureAfterArrival))
-                .andThen(removeFlightIfHoursOnGroundMore(t -> t >= 2))
+                .andThen(removeFlightIfTotalGroundTime(t -> t >= 2))
                 .filter(flights);
-//        System.out.println("\nflights after working the several filters: " + result);
+        System.out.println("\nthe normal flights:");
+        result.forEach(System.out::println);
+
+
 
         //раздел фильтров №2: фильтруем полеты на уровне полей класса Flight
-        //5. убираем полеты с числом сегментов, не равным одному
+        //6. убираем полеты с числом сегментов более одного
         result = removeFlightIfSegment(moreOne).filter(flights);
-//        System.out.println("\nflights with the number of segments one and less: " + result);
-
-        //6. применение нескольких фильтров одновременно
-        result = removeFlightIfDate(departureInPast)
-                .andThen(removeFlightIfDate(departureAfterArrival))
-                .andThen(removeFlightIfHoursOnGroundMore(t -> t >= 2))
-                .andThen(removeFlightIfSegment(moreOne))
-                .andThen(removeFlightIfSegment(moreThanOne))
-                .filter(flights);
-//        System.out.println("\nflights after working the several filters: " + result);
+        System.out.println("\none segment flights:");
+        result.forEach(System.out::println);
 
         //7. применение нескольких фильтров одновременно
-        result = slipFlightIfDate(departureAfterArrival)
+        result = removeFlightIfSegment(moreOne)
+                .andThen(removeFlightIfDate(departureInPast))
+                .andThen(removeFlightIfDate(departureAfterArrival))
                 .filter(flights);
-//        System.out.println("\nflights after working the several filters: " + result);
+        System.out.println("\none segment normal flights:");
+        result.forEach(System.out::println);
     }
 }

@@ -3,21 +3,21 @@ package com.gridnine.testing.rules;
 import com.gridnine.testing.entities.Flight;
 import com.gridnine.testing.entities.Segment;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
 public class Rules {
-    public static final LocalDateTime now = LocalDateTime.now();
+    private static final LocalDateTime now = LocalDateTime.now();
+    private static final long MS_IN_HOUR = 3600000;
     public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
     public static final Predicate<Flight> moreOne = f -> f.getSegments().size() > 1;
-    public static final Predicate<Flight> moreThanOne = f -> f.getSegments().size() > 1;
 
     public static Rule<List<Flight>, List<Flight>> removeFlightIfDate(Predicate<Segment> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
@@ -53,7 +53,8 @@ public class Rules {
     }
 
     public static Rule<List<Flight>, List<Flight>> skipFlightIfSegment(Predicate<Flight> predicate) {
-        return new Rule<List<Flight>, List<Flight>>() {
+        return
+                new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
                 return flights.stream()
@@ -63,26 +64,35 @@ public class Rules {
         };
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfHoursOnGroundMore(Predicate<Long> predicate) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Long> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
-                List<Flight> resultFlights = new ArrayList<>(flights);
-                Iterator<Flight> iterator = resultFlights.iterator();
-                while (iterator.hasNext()) {
-                    Flight flight = iterator.next();
-                    long time = 0;
-                    LocalDateTime from = resultFlights.get(0).getSegments().get(0).getDepartureDate();//чтобы для первого segment время на земле = 0
-                    for (Segment segment : flight.getSegments()) {
-                        time += ChronoUnit.HOURS.between(from, segment.getDepartureDate());
-                        from = segment.getArrivalDate();
-                        if (predicate.test(time)) {
-                            iterator.remove();
-                        }
-                    }
-                }
-                return resultFlights;
+                return new ArrayList<>(flights).stream()
+                        .filter(f -> !ifTotalGroundTime(f, predicate))
+                        .collect(toList());
             }
         };
+    }
+
+    private static boolean ifTotalGroundTime(Flight flight, Predicate<Long> predicate) {
+        return predicate.test(totalGroundTime(flight));
+    }
+
+    private static long totalGroundTime(Flight flight) {
+        return flight.getSegments().stream()
+                .flatMap(Rules::getDateStream)
+                .skip(1)//skip departure of the first segment
+                .limit(flight.getSegments().size() * 2L - 2)//remove arrival of the last segment
+                .map(Rules::toLong)
+                .reduce(0L, (arr, dep) -> dep - arr) / MS_IN_HOUR;
+    }
+
+    private static Stream<LocalDateTime> getDateStream(Segment segment) {
+        return Stream.of(segment.getDepartureDate(), segment.getArrivalDate());
+    }
+
+    private static long toLong(LocalDateTime date) {
+        return Timestamp.valueOf(date).getTime();
     }
 }
