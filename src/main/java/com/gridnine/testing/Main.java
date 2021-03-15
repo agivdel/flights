@@ -49,7 +49,7 @@ public class Main {
 //        System.out.println("\nflights after working the several filters: " + result);
 
         //7. применение нескольких фильтров одновременно
-        result = skipFlightIfSegment(notOne)
+        result = slipFlightIfDate(departureAfterArrival)
                 .filter(flights);
         System.out.println("\nflights after working the several filters: " + result);
     }

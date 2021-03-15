@@ -31,6 +31,17 @@ public class Rules {
         };
     }
 
+    public static Rule<List<Flight>, List<Flight>> slipFlightIfDate(Predicate<Segment> predicate) {
+        return new Rule<List<Flight>, List<Flight>>() {
+            @Override
+            public List<Flight> filter(List<Flight> flights) {
+                return flights.stream()
+                        .filter(f -> f.getSegments().stream().allMatch(predicate))
+                        .collect(toList());
+            }
+        };
+    }
+
     public static Rule<List<Flight>, List<Flight>> removeFlightIfSegment(Predicate<Flight> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
