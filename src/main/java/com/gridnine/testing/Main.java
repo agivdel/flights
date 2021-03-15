@@ -8,6 +8,11 @@ import java.util.List;
 import static com.gridnine.testing.rules.Rules.*;
 
 public class Main {
+    //TODO java doc;
+    //TODO поиск полетов с хотя бы одним временем пересадки менее определенного значения
+    // (сейчас идет поиск накопленного значения);
+    //TODO убрать жесткую зависимость от реализации класа правил
+
     public static void main(String[] args) {
         List<Flight> flights = FlightBuilder.createFlights();
         System.out.println("flights before filter:");
@@ -26,12 +31,12 @@ public class Main {
         result.forEach(System.out::println);
 
         //3. убираем полеты с общим временем на земле свыше определенного значения
-        result = removeFlightIfTotalGroundTime(t -> t >= 2).filter(flights);
+        result = removeFlightIfTotalGroundTime(t -> t >= 2, HOURS).filter(flights);
         System.out.println("\nwithout flights with a total time on ground 2 hours and more:");
         result.forEach(System.out::println);
 
         //4. убираем полеты с общим временем на земле менее определенного значения
-        result = removeFlightIfTotalGroundTime(t -> t < 1).filter(flights);
+        result = removeFlightIfTotalGroundTime(t -> t < 60, MINUTES).filter(flights);
         System.out.println("\nwithout flights with a total time on ground less 1 hour");
         System.out.println("(in fact, it is only multi segment flights):");
         result.forEach(System.out::println);
@@ -39,7 +44,7 @@ public class Main {
         //5. применение нескольких фильтров одновременно
         result = removeFlightIfDate(departureInPast)
                 .andThen(removeFlightIfDate(departureAfterArrival))
-                .andThen(removeFlightIfTotalGroundTime(t -> t >= 2))
+                .andThen(removeFlightIfTotalGroundTime(t -> t >= 2, HOURS))
                 .filter(flights);
         System.out.println("\nthe normal flights:");
         result.forEach(System.out::println);

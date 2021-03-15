@@ -14,7 +14,8 @@ import static java.util.stream.Collectors.toList;
 
 public class Rules {
     private static final LocalDateTime now = LocalDateTime.now();
-    private static final long MS_IN_HOUR = 3600000;
+    public static final long HOURS = 3600000;
+    public static final long MINUTES = 60000;
     public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
     public static final Predicate<Flight> moreOne = f -> f.getSegments().size() > 1;
@@ -30,7 +31,7 @@ public class Rules {
         };
     }
 
-    public static Rule<List<Flight>, List<Flight>> slipFlightIfDate(Predicate<Segment> predicate) {
+    public static Rule<List<Flight>, List<Flight>> skipFlightIfDate(Predicate<Segment> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
@@ -64,19 +65,19 @@ public class Rules {
         };
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Long> predicate) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Long> predicate, long unit) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
                 return new ArrayList<>(flights).stream()
-                        .filter(f -> !ifTotalGroundTime(f, predicate))
+                        .filter(f -> !ifTotalGroundTime(f, predicate, unit))
                         .collect(toList());
             }
         };
     }
 
-    private static boolean ifTotalGroundTime(Flight flight, Predicate<Long> predicate) {
-        return predicate.test(totalGroundTime(flight));
+    private static boolean ifTotalGroundTime(Flight flight, Predicate<Long> predicate, long unit) {
+        return predicate.test(totalGroundTime(flight) / unit);
     }
 
     private static long totalGroundTime(Flight flight) {
@@ -85,7 +86,7 @@ public class Rules {
                 .skip(1)//skip departure of the first segment
                 .limit(flight.getSegments().size() * 2L - 2)//remove arrival of the last segment
                 .map(Rules::toLong)
-                .reduce(0L, (arr, dep) -> dep - arr) / MS_IN_HOUR;
+                .reduce(0L, (arr, dep) -> dep - arr);//count the total ground time
     }
 
     private static Stream<LocalDateTime> getDateStream(Segment segment) {
