@@ -81,14 +81,14 @@ public class Rules {
 
     private static long totalGroundTime(Flight flight) {
         return flight.getSegments().stream()
-                .flatMap(Rules::getDateStream)
+                .flatMap(Rules::toDate)
                 .skip(1)//skip departure of the first segment
                 .limit(flight.getSegments().size() * 2L - 2)//remove arrival of the last segment
                 .map(Rules::toLong)
                 .reduce(0L, (arr, dep) -> dep - arr);//count the total ground time
     }
 
-    private static Stream<LocalDateTime> getDateStream(Segment segment) {
+    private static Stream<LocalDateTime> toDate(Segment segment) {
         return Stream.of(segment.getDepartureDate(), segment.getArrivalDate());
     }
 
