@@ -15,28 +15,38 @@ public class Main {
         Rules rules = new Rules();
         List<Flight> result;
 
-        //1. вылет до текущего момента времени
-        result = rules.removeFlightIf(departureInPast).filter(flights);
+        //раздел фильтров №1: фильтруем полеты на уровне полей класса Segment
+        //1. убираем вылеты до текущего момента времени
+        result = rules.removeFlightIfDate(departureInPast).filter(flights);
         System.out.println("\nflights without departures in the past: " + result);
 
-        //2. имеются сегменты с датой вылета позже даты вылета
-        result = rules.removeFlightIf(departureAfterArrival).filter(flights);
+        //2. убираем сегменты с датой вылета позже даты вылета
+        result = rules.removeFlightIfDate(departureAfterArrival).filter(flights);
         System.out.println("\nflights without departures after arrival: " + result);
 
-        //3. общее время, проведённое на земле превышает определенное значение (два часа)
-        result = rules.removeFlightIfHoursOnGround(t -> t >= 2).filter(flights);
+        //3. убираем полеты с общим временем на земле свыше определенного значения (два часа)
+        result = rules.removeFlightIfHoursOnGroundMore(t -> t >= 2).filter(flights);
         System.out.println("\nwithout flights with a total time on ground 2 hours and more: " + result);
 
 
         //4. применение нескольких фильтров одновременно
-        result = rules.removeFlightIf(departureInPast)
-                .andThen(rules.removeFlightIf(departureAfterArrival))
-                .andThen(rules.removeFlightIfHoursOnGround(t -> t >= 2))
+        result = rules.removeFlightIfDate(departureInPast)
+                .andThen(rules.removeFlightIfDate(departureAfterArrival))
+                .andThen(rules.removeFlightIfHoursOnGroundMore(t -> t >= 2))
                 .filter(flights);
         System.out.println("\nflights after working the several filters: " + result);
 
-        //5. имеются полеты с общем временем на земле более определенного значения
+        //раздел фильтров №2: фильтруем полеты на уровне полей класса Flight
+        //5. убираем полеты с числом сегментов, не равным одному
+        result = rules.removeFlightIfSegment(notOne).filter(flights);
+        System.out.println("\nflights with the number of segments one and less: " + result);
 
-        System.out.println("\nwithout flights with a total time on the ground 1 hour and less: " + result);
+        //6. применение нескольких фильтров одновременно
+        result = rules.removeFlightIfDate(departureInPast)
+                .andThen(rules.removeFlightIfDate(departureAfterArrival))
+                .andThen(rules.removeFlightIfHoursOnGroundMore(t -> t >= 2))
+                .andThen(rules.removeFlightIfSegment(notOne))
+                .filter(flights);
+        System.out.println("\nflights after working the several filters: " + result);
     }
 }
