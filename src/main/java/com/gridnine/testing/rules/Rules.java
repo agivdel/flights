@@ -18,7 +18,7 @@ public class Rules {
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
     public static final Predicate<Flight> notOne = f -> f.getSegments().size() != 1;
 
-    public Rule<List<Flight>, List<Flight>> removeFlightIfDate(Predicate<Segment> predicate) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfDate(Predicate<Segment> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
@@ -29,7 +29,7 @@ public class Rules {
         };
     }
 
-    public Rule<List<Flight>, List<Flight>> removeFlightIfSegment(Predicate<Flight> predicate) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfSegment(Predicate<Flight> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
@@ -40,7 +40,7 @@ public class Rules {
         };
     }
 
-    public Rule<List<Flight>, List<Flight>> removeFlightIfHoursOnGroundMore(Predicate<Long> predicate) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfHoursOnGroundMore(Predicate<Long> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
