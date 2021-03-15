@@ -42,6 +42,17 @@ public class Rules {
         };
     }
 
+    public static Rule<List<Flight>, List<Flight>> skipFlightIfSegment(Predicate<Flight> predicate) {
+        return new Rule<List<Flight>, List<Flight>>() {
+            @Override
+            public List<Flight> filter(List<Flight> flights) {
+                return flights.stream()
+                        .filter(predicate)
+                        .collect(toList());
+            }
+        };
+    }
+
     public static Rule<List<Flight>, List<Flight>> removeFlightIfHoursOnGroundMore(Predicate<Long> predicate) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
