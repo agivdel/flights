@@ -1,7 +1,6 @@
 package com.gridnine.testing.rules;
 
 import com.gridnine.testing.entities.Flight;
-import com.gridnine.testing.util.FlightBuilderEnlarged;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -17,7 +16,7 @@ public class RulesTest {
 
     @Test
     public void removeFlightIfDate_departureInPast_the_normal_flights_are_remain_unchanged() {
-        flights = FlightBuilderEnlarged.createFlights(normalOneSegmentFlight);
+        flights = createFlights(normalOneSegmentFlight);
         result = removeFlightIfDate(departureInPast).filter(flights);
 
         assertEquals(flights, result);

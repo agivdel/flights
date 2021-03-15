@@ -21,12 +21,12 @@ public class Main {
         List<Flight> result;
 
         //раздел фильтров №1: фильтруем полеты на уровне полей класса Segment
-        //1. убираем вылеты до текущего момента времени
+        //1. убираем полеты до текущего момента времени
         result = removeFlightIfDate(departureInPast).filter(flights);
         System.out.println("\nflights without departures in the past:");
         result.forEach(System.out::println);
 
-        //2. убираем сегменты с датой вылета позже даты вылета
+        //2. убираем полеты с датой вылета позже даты вылета
         result = removeFlightIfDate(departureAfterArrival).filter(flights);
         System.out.println("\nflights without departures after arrival:");
         result.forEach(System.out::println);
