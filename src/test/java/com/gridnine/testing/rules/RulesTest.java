@@ -78,7 +78,7 @@ public class RulesTest {
     @Test
     public void removeFlightIfTotalGroundTime_the_normal_flights_are_remain_unchanged() {
         flights = createFlights(normalOneSegmentFlight, less1HourGroundTimeFlight);
-        List<Flight> result = removeFlightIfTotalGroundTime(t -> t > 2, HOURS).filter(flights);
+        List<Flight> result = removeFlightIfTotalGroundTime(t -> t > 2, TimeUnit.HOURS).filter(flights);
         result.forEach(System.out::println);
 
         assertEquals(flights, result);
@@ -87,7 +87,7 @@ public class RulesTest {
     @Test
     public void removeFlightIfTotalGroundTime_the_flights_that_didnt_satisfy_predicate_are_filtered_off() {
         flights = createFlights(threeHoursGroundTimeFlight, sixHoursGroundTimeFlight);
-        result = removeFlightIfTotalGroundTime(t -> t > 2, HOURS).filter(flights);
+        result = removeFlightIfTotalGroundTime(t -> t > 2, TimeUnit.HOURS).filter(flights);
 
         assertTrue(result.isEmpty());
     }
@@ -95,7 +95,7 @@ public class RulesTest {
     @Test
     public void removeFlightIfTotalGroundTime_the_flights_that_didnt_satisfy_predicate_are_filtered_of2() {
         flights = createFlights(oneHourGroundTimeFlight, less1HourGroundTimeFlight);
-        result = removeFlightIfTotalGroundTime(t -> t < 1, HOURS).filter(flights);
+        result = removeFlightIfTotalGroundTime(t -> t < 1, TimeUnit.HOURS).filter(flights);
 
         assertNotEquals(flights, result);
         assertEquals(1, result.size());
@@ -115,7 +115,7 @@ public class RulesTest {
         );
         result = removeFlightIfDate(departureInPast)
                 .andThen(removeFlightIfDate(departureAfterArrival))
-                .andThen(removeFlightIfTotalGroundTime(t -> t >= 60, MINUTES))
+                .andThen(removeFlightIfTotalGroundTime(t -> t >= 60, TimeUnit.MINUTES))
                 .filter(flights);
 
         assertNotEquals(flights, result);

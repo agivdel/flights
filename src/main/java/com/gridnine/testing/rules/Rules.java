@@ -14,8 +14,6 @@ import static java.util.stream.Collectors.toList;
 
 public class Rules {
     private static final LocalDateTime now = LocalDateTime.now();
-    public static final long HOURS = 3600000;
-    public static final long MINUTES = 60000;
     public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
     public static final Predicate<Flight> moreOne = f -> f.getSegments().size() > 1;
@@ -65,7 +63,7 @@ public class Rules {
         };
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Long> predicate, long unit) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Long> predicate, TimeUnit unit) {
         return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> filter(List<Flight> flights) {
@@ -76,8 +74,8 @@ public class Rules {
         };
     }
 
-    private static boolean ifTotalGroundTime(Flight flight, Predicate<Long> predicate, long unit) {
-        return predicate.test(totalGroundTime(flight) / unit);
+    private static boolean ifTotalGroundTime(Flight flight, Predicate<Long> predicate, TimeUnit unit) {
+        return predicate.test(totalGroundTime(flight) / unit.getValue());
     }
 
     private static long totalGroundTime(Flight flight) {
