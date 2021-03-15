@@ -44,6 +44,7 @@ public class Main {
                 .andThen(removeFlightIfDate(departureAfterArrival))
                 .andThen(removeFlightIfHoursOnGroundMore(t -> t >= 2))
                 .andThen(removeFlightIfSegment(notOne))
+                .andThen(removeFlightIfSegment(moreThanOne))
                 .filter(flights);
         System.out.println("\nflights after working the several filters: " + result);
     }
