@@ -51,9 +51,13 @@ public class RulesTest {
     }
 
     @Test
-    public void skipFlightIfDate() {
+    public void skipFlightIfDate_departureInPast_skip_the_flights_with_departures_in_past() {
         flights = createFlights(normalOneSegmentFlight, oneHourGroundTimeFlight, departureInPastFlight);
+        result = skipFlightIfDate(departureInPast).fromSource(flights);
 
+        assertNotEquals(flights, result);
+        assertEquals(1, result.size());
+        assertEquals(flights.get(2), result.get(0));
     }
 
     @Test
@@ -72,6 +76,14 @@ public class RulesTest {
         assertNotEquals(flights, result);
         assertEquals(1, result.size());
         assertEquals(flights.get(0), result.get(0));
+    }
+
+    @Test
+    public void skipFlightIfSegment_moreOne_the_flights_with_more_one_segment_are_remain_unchanged() {
+        flights = createFlights(oneHourGroundTimeFlight, less1HourGroundTimeFlight);
+        result = skipFlightIfSegment(moreOne).fromSource(flights);
+
+        assertEquals(flights, result);
     }
 
     @Test

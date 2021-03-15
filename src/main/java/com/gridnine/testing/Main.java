@@ -12,7 +12,6 @@ public class Main {
     //TODO java doc;
     //TODO поиск полетов с хотя бы одним временем пересадки менее определенного значения
     // (сейчас идет поиск накопленного значения);
-    //TODO убрать жесткую зависимость от реализации класа правил
 
     public static void main(String[] args) {
         List<Flight> flights = FlightBuilder.createFlights();

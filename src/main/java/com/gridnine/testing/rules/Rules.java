@@ -14,8 +14,10 @@ import static java.util.stream.Collectors.toList;
 
 public class Rules {
     private static final LocalDateTime now = LocalDateTime.now();
+
     public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
+
     public static final Predicate<Flight> moreOne = f -> f.getSegments().size() > 1;
 
     public static Rule<List<Flight>, List<Flight>> removeFlightIfDate(Predicate<Segment> predicate) {
@@ -52,8 +54,7 @@ public class Rules {
     }
 
     public static Rule<List<Flight>, List<Flight>> skipFlightIfSegment(Predicate<Flight> predicate) {
-        return
-                new Rule<List<Flight>, List<Flight>>() {
+        return new Rule<List<Flight>, List<Flight>>() {
             @Override
             public List<Flight> fromSource(List<Flight> flights) {
                 return flights.stream()
