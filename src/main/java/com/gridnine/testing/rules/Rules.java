@@ -84,24 +84,20 @@ public class Rules {
      * for compliance with the predicate
      * Returns whether any transfer of this flight match the provided predicate.*/
     private static boolean ifAnyGroundTime(Flight flight, Predicate<Long> predicate, TimeUnit unit) {
-        List<Long> list = toLongList(flight);
-        return toPairs(list).stream()
+        return toPairs(flight)
                 .map(Pair::getDifference)
                 .map(d -> d / unit.getValue())
                 .anyMatch(predicate);
     }
 
-    private static List<Long> toLongList(Flight flight) {
-        return streamOfLongFrom(flight).collect(toList());
-    }
-
-    private static List<Pair> toPairs(List<Long> list) {
+    private static Stream<Pair> toPairs(Flight flight) {
+        Long[] longArray = streamOfLongFrom(flight).toArray(Long[]::new);
         List<Pair> pairs = new ArrayList<>();
-        for (int i = 0; i < list.size(); i += 2) {
-            Pair pair = new Pair(list.get(i), list.get(i + 1));
+        for (int i = 0; i < longArray.length; i += 2) {
+            Pair pair = new Pair(longArray[i], longArray[i + 1]);
             pairs.add(pair);
         }
-        return pairs;
+        return pairs.stream();
     }
 
     /**General auxiliary methods and classes */
