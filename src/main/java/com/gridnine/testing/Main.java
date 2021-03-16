@@ -1,9 +1,11 @@
 package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
+import com.gridnine.testing.entities.Segment;
 import com.gridnine.testing.rules.TimeUnit;
 import com.gridnine.testing.util.FlightBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.gridnine.testing.rules.Rules.*;
@@ -41,7 +43,13 @@ public class Main {
         System.out.println("(in fact, it is only multi segment flights):");
         result.forEach(System.out::println);
 
-        //5. применение нескольких фильтров одновременно
+        //5. убираем полеты с хотя бы одним временем на земле менее определенного значения
+        result = removeFlightIfAnyGroundTime(t -> t < 60, TimeUnit.MINUTES).fromSource(flights);
+        System.out.println("\nwithout flights with any time on ground less 1 hour");
+        System.out.println("(in fact, it is only multi segment flights):");
+        result.forEach(System.out::println);
+
+        //6. применение нескольких фильтров одновременно
         result = removeFlightIfDate(departureInPast)
                 .andThen(removeFlightIfDate(departureAfterArrival))
                 .andThen(removeFlightIfTotalGroundTime(t -> t >= 2, TimeUnit.HOURS))
@@ -52,12 +60,12 @@ public class Main {
 
 
         //раздел фильтров №2: фильтруем полеты на уровне полей класса Flight
-        //6. убираем полеты с числом сегментов более одного
+        //7. убираем полеты с числом сегментов более одного
         result = removeFlightIfSegment(moreOne).fromSource(flights);
         System.out.println("\none segment flights:");
         result.forEach(System.out::println);
 
-        //7. применение нескольких фильтров одновременно
+        //8. применение нескольких фильтров одновременно
         result = removeFlightIfSegment(moreOne)
                 .andThen(removeFlightIfDate(departureInPast))
                 .andThen(removeFlightIfDate(departureAfterArrival))
