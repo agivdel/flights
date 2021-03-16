@@ -126,6 +126,33 @@ public class RulesTest {
         assertEquals(flights.get(0), result.get(0));
     }
 
+    @Test
+    public void removeFlightIfAnyGroundTime_the_flights_that_didnt_satisfy_predicate_are_filtered_off() {
+        flights = createFlights(
+                less1HourGroundTimeFlight,
+                oneHourGroundTimeFlight,
+                threeHoursGroundTimeFlight,
+                sixHoursGroundTimeFlight);
+        result = removeFlightIfAnyGroundTime(t -> t < 60, TimeUnit.MINUTES).fromSource(flights);
+
+        assertEquals(3, result.size());
+        assertEquals(flights.get(1), result.get(0));
+        assertEquals(flights.get(2), result.get(1));
+        assertEquals(flights.get(3), result.get(2));
+    }
+
+    @Test
+    public void skipFlightIfAnyGroundTime_the_flights_that_didnt_satisfy_predicate_are_filtered_off() {
+        flights = createFlights(
+                less1HourGroundTimeFlight,
+                oneHourGroundTimeFlight,
+                threeHoursGroundTimeFlight,
+                sixHoursGroundTimeFlight);
+        result = skipFlightIfAnyGroundTime(t -> t < 60, TimeUnit.MINUTES).fromSource(flights);
+
+        assertEquals(1, result.size());
+        assertEquals(flights.get(0), result.get(0));
+    }
 
     @Test
     public void combine_some_filters_with_methods() {
