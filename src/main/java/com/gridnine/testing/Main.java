@@ -1,19 +1,14 @@
 package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
-import com.gridnine.testing.entities.Segment;
 import com.gridnine.testing.rules.TimeUnit;
 import com.gridnine.testing.util.FlightBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.gridnine.testing.rules.Rules.*;
 
 public class Main {
-    //TODO java doc;
-    //TODO поиск полетов с хотя бы одним временем пересадки менее определенного значения
-    // (сейчас идет поиск накопленного значения);
 
     public static void main(String[] args) {
         List<Flight> flights = FlightBuilder.createFlights();
