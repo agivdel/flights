@@ -21,91 +21,51 @@ public class Rules {
     public static final Predicate<Flight> moreOne = f -> f.getSegments().size() > 1;
 
     public static Rule<List<Flight>, List<Flight>> removeFlightIfDate(Predicate<Segment> predicate) {
-        return new Rule<List<Flight>, List<Flight>>() {
-            @Override
-            public List<Flight> fromSource(List<Flight> flights) {
-                return flights.stream()
-                        .filter(f -> f.getSegments().stream().noneMatch(predicate))
-                        .collect(toList());
-            }
-        };
+        return flights -> flights.stream()
+                .filter(f -> f.getSegments().stream().noneMatch(predicate))
+                .collect(toList());
     }
 
     public static Rule<List<Flight>, List<Flight>> skipFlightIfDate(Predicate<Segment> predicate) {
-        return new Rule<List<Flight>, List<Flight>>() {
-            @Override
-            public List<Flight> fromSource(List<Flight> flights) {
-                return flights.stream()
-                        .filter(f -> f.getSegments().stream().allMatch(predicate))
-                        .collect(toList());
-            }
-        };
+        return flights -> flights.stream()
+                .filter(f -> f.getSegments().stream().allMatch(predicate))
+                .collect(toList());
     }
 
     public static Rule<List<Flight>, List<Flight>> removeFlightIfSegment(Predicate<Flight> predicate) {
-        return new Rule<List<Flight>, List<Flight>>() {
-            @Override
-            public List<Flight> fromSource(List<Flight> flights) {
-                return flights.stream()
-                        .filter(predicate.negate())
-                        .collect(toList());
-            }
-        };
+        return flights -> flights.stream()
+                .filter(predicate.negate())
+                .collect(toList());
     }
 
     public static Rule<List<Flight>, List<Flight>> skipFlightIfSegment(Predicate<Flight> predicate) {
-        return new Rule<List<Flight>, List<Flight>>() {
-            @Override
-            public List<Flight> fromSource(List<Flight> flights) {
-                return flights.stream()
-                        .filter(predicate)
-                        .collect(toList());
-            }
-        };
+        return flights -> flights.stream()
+                .filter(predicate)
+                .collect(toList());
     }
 
     public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Long> predicate, TimeUnit unit) {
-        return new Rule<List<Flight>, List<Flight>>() {
-            @Override
-            public List<Flight> fromSource(List<Flight> flights) {
-                return flights.stream()
-                        .filter(f -> !ifTotalGroundTime(f, predicate, unit))
-                        .collect(toList());
-            }
-        };
+        return flights -> flights.stream()
+                .filter(f -> !ifTotalGroundTime(f, predicate, unit))
+                .collect(toList());
     }
 
     public static Rule<List<Flight>, List<Flight>> skipFlightIfTotalGroundTime(Predicate<Long> predicate, TimeUnit unit) {
-        return new Rule<List<Flight>, List<Flight>>() {
-            @Override
-            public List<Flight> fromSource(List<Flight> flights) {
-                return flights.stream()
-                        .filter(f -> ifTotalGroundTime(f, predicate, unit))
-                        .collect(toList());
-            }
-        };
+        return flights -> flights.stream()
+                .filter(f -> ifTotalGroundTime(f, predicate, unit))
+                .collect(toList());
     }
 
     public static Rule<List<Flight>, List<Flight>> removeFlightIfAnyGroundTime(Predicate<Long> predicate, TimeUnit unit) {
-        return new Rule<List<Flight>, List<Flight>>() {
-            @Override
-            public List<Flight> fromSource(List<Flight> flights) {
-                return flights.stream()
-                        .filter(f -> !ifAnyGroundTime(f, predicate, unit))
-                        .collect(toList());
-            }
-        };
+        return flights -> flights.stream()
+                .filter(f -> !ifAnyGroundTime(f, predicate, unit))
+                .collect(toList());
     }
 
     public static Rule<List<Flight>, List<Flight>> skipFlightIfAnyGroundTime(Predicate<Long> predicate, TimeUnit unit) {
-        return new Rule<List<Flight>, List<Flight>>() {
-            @Override
-            public List<Flight> fromSource(List<Flight> flights) {
-                return flights.stream()
-                        .filter(f -> ifAnyGroundTime(f, predicate, unit))
-                        .collect(toList());
-            }
-        };
+        return flights -> flights.stream()
+                .filter(f -> ifAnyGroundTime(f, predicate, unit))
+                .collect(toList());
     }
 
     /**Auxiliary methods for counting the total ground time for each flight.
