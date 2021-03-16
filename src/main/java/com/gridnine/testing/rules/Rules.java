@@ -75,6 +75,17 @@ public class Rules {
         };
     }
 
+    public static Rule<List<Flight>, List<Flight>> skipFlightIfTotalGroundTime(Predicate<Long> predicate, TimeUnit unit) {
+        return new Rule<List<Flight>, List<Flight>>() {
+            @Override
+            public List<Flight> fromSource(List<Flight> flights) {
+                return new ArrayList<>(flights).stream()
+                        .filter(f -> ifTotalGroundTime(f, predicate, unit))
+                        .collect(toList());
+            }
+        };
+    }
+
     private static boolean ifTotalGroundTime(Flight flight, Predicate<Long> predicate, TimeUnit unit) {
         return predicate.test(totalGroundTime(flight) / unit.getValue());
     }
