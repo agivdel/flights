@@ -14,11 +14,13 @@ import static java.util.stream.Collectors.toList;
 
 public class Rules {
     private static final LocalDateTime now = LocalDateTime.now();
+    //TODO такое решение требует перезапуска каждый день. Исправить.
 
     /**Examples of some prepared predicates */
     public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
     public static final Predicate<Flight> moreOne = f -> f.getSegments().size() > 1;
+    //TODO подумать о переносе констант в отдельный класс
 
     public static Rule<List<Flight>, List<Flight>> removeFlightIfDate(Predicate<Segment> predicate) {
         return flights -> flights.stream()
