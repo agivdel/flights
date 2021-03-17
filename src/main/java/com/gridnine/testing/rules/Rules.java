@@ -44,25 +44,25 @@ public class Rules {
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Long> predicate, TimeUnit unit) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Long> predicate, TimeMeasure unit) {
         return flights -> flights.stream()
                 .filter(f -> !ifTotalGroundTime(f, predicate, unit))
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> skipFlightIfTotalGroundTime(Predicate<Long> predicate, TimeUnit unit) {
+    public static Rule<List<Flight>, List<Flight>> skipFlightIfTotalGroundTime(Predicate<Long> predicate, TimeMeasure unit) {
         return flights -> flights.stream()
                 .filter(f -> ifTotalGroundTime(f, predicate, unit))
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfAnyGroundTime(Predicate<Long> predicate, TimeUnit unit) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfAnyGroundTime(Predicate<Long> predicate, TimeMeasure unit) {
         return flights -> flights.stream()
                 .filter(f -> !ifAnyGroundTime(f, predicate, unit))
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> skipFlightIfAnyGroundTime(Predicate<Long> predicate, TimeUnit unit) {
+    public static Rule<List<Flight>, List<Flight>> skipFlightIfAnyGroundTime(Predicate<Long> predicate, TimeMeasure unit) {
         return flights -> flights.stream()
                 .filter(f -> ifAnyGroundTime(f, predicate, unit))
                 .collect(toList());
@@ -70,8 +70,8 @@ public class Rules {
 
     /**Auxiliary methods for counting the total ground time for each flight.
      * Returns whether the total ground time of this flight match the provided predicate.*/
-    private static boolean ifTotalGroundTime(Flight flight, Predicate<Long> predicate, TimeUnit unit) {
-        return predicate.test(totalGroundTime(flight) / unit.getValue());
+    private static boolean ifTotalGroundTime(Flight flight, Predicate<Long> predicate, TimeMeasure unit) {
+        return predicate.test(totalGroundTime(flight) / unit.getMillis());
     }
 
     private static long totalGroundTime(Flight flight) {
@@ -83,10 +83,10 @@ public class Rules {
      * (time between two neighboring segments of a flight)
      * for compliance with the predicate
      * Returns whether any transfer of this flight match the provided predicate.*/
-    private static boolean ifAnyGroundTime(Flight flight, Predicate<Long> predicate, TimeUnit unit) {
+    private static boolean ifAnyGroundTime(Flight flight, Predicate<Long> predicate, TimeMeasure unit) {
         return toPairs(flight)
                 .map(Pair::getDifference)
-                .map(d -> d / unit.getValue())
+                .map(d -> d / unit.getMillis())
                 .anyMatch(predicate);
     }
 

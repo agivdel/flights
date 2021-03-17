@@ -1,7 +1,7 @@
 package com.gridnine.testing;
 
 import com.gridnine.testing.entities.Flight;
-import com.gridnine.testing.rules.TimeUnit;
+import com.gridnine.testing.rules.TimeMeasure;
 import com.gridnine.testing.util.FlightBuilder;
 
 import java.util.List;
@@ -28,18 +28,18 @@ public class Main {
         result.forEach(System.out::println);
 
         //3. убираем полеты с общим временем на земле свыше определенного значения
-        result = removeFlightIfTotalGroundTime(t -> t >= 2, TimeUnit.HOURS).fromSource(flights);
+        result = removeFlightIfTotalGroundTime(t -> t >= 2, TimeMeasure.HOURS).fromSource(flights);
         System.out.println("\nwithout flights with a total time on ground 2 hours and more:");
         result.forEach(System.out::println);
 
         //4. убираем полеты с общим временем на земле менее определенного значения
-        result = removeFlightIfTotalGroundTime(t -> t < 60, TimeUnit.MINUTES).fromSource(flights);
+        result = removeFlightIfTotalGroundTime(t -> t < 60, TimeMeasure.MINUTES).fromSource(flights);
         System.out.println("\nwithout flights with a total time on ground less 1 hour");
         System.out.println("(in fact, it is only multi segment flights):");
         result.forEach(System.out::println);
 
         //5. убираем полеты с хотя бы одним временем на земле менее определенного значения
-        result = removeFlightIfAnyGroundTime(t -> t < 60, TimeUnit.MINUTES).fromSource(flights);
+        result = removeFlightIfAnyGroundTime(t -> t < 60, TimeMeasure.MINUTES).fromSource(flights);
         System.out.println("\nwithout flights with any time on ground less 1 hour");
         System.out.println("(in fact, it is only multi segment flights):");
         result.forEach(System.out::println);
@@ -47,7 +47,7 @@ public class Main {
         //6. применение нескольких фильтров одновременно
         result = removeFlightIfDate(departureInPast)
                 .andThen(removeFlightIfDate(departureAfterArrival))
-                .andThen(removeFlightIfTotalGroundTime(t -> t >= 2, TimeUnit.HOURS))
+                .andThen(removeFlightIfTotalGroundTime(t -> t >= 2, TimeMeasure.HOURS))
                 .fromSource(flights);
         System.out.println("\nthe normal flights:");
         result.forEach(System.out::println);
