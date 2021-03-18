@@ -16,7 +16,7 @@ public class Rules {
     private static final LocalDateTime now = LocalDateTime.now();
     //TODO такое решение требует перезапуска каждый день. Исправить.
 
-    /**Examples of some prepared predicates */
+    /**Examples of some prepared predicates.*/
     public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
     public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
     public static final Predicate<Flight> moreOne = f -> f.getSegments().size() > 1;
@@ -46,34 +46,34 @@ public class Rules {
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Long> predicate, TimeMeasure unit) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Long> predicate) {
         return flights -> flights.stream()
-                .filter(f -> !ifTotalGroundTime(f, predicate, unit))
+                .filter(f -> !ifTotalGroundTime(f, predicate))
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> skipFlightIfTotalGroundTime(Predicate<Long> predicate, TimeMeasure unit) {
+    public static Rule<List<Flight>, List<Flight>> skipFlightIfTotalGroundTime(Predicate<Long> predicate) {
         return flights -> flights.stream()
-                .filter(f -> ifTotalGroundTime(f, predicate, unit))
+                .filter(f -> ifTotalGroundTime(f, predicate))
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfAnyGroundTime(Predicate<Long> predicate, TimeMeasure unit) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfAnyGroundTime(Predicate<Long> predicate) {
         return flights -> flights.stream()
-                .filter(f -> !ifAnyGroundTime(f, predicate, unit))
+                .filter(f -> !ifAnyGroundTime(f, predicate))
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> skipFlightIfAnyGroundTime(Predicate<Long> predicate, TimeMeasure unit) {
+    public static Rule<List<Flight>, List<Flight>> skipFlightIfAnyGroundTime(Predicate<Long> predicate) {
         return flights -> flights.stream()
-                .filter(f -> ifAnyGroundTime(f, predicate, unit))
+                .filter(f -> ifAnyGroundTime(f, predicate))
                 .collect(toList());
     }
 
     /**Auxiliary methods for counting the total ground time for each flight.
      * Returns whether the total ground time of this flight match the provided predicate.*/
-    private static boolean ifTotalGroundTime(Flight flight, Predicate<Long> predicate, TimeMeasure unit) {
-        return predicate.test(totalGroundTime(flight) / unit.getMillis());
+    private static boolean ifTotalGroundTime(Flight flight, Predicate<Long> predicate) {
+        return predicate.test(totalGroundTime(flight));
     }
 
     private static long totalGroundTime(Flight flight) {
@@ -81,14 +81,13 @@ public class Rules {
                 .reduce(0L, (arr, dep) -> dep - arr);//count the total ground time
     }
 
-    /**Auxiliary methods for checking each transfers
+    /**Auxiliary methods and classes for checking each transfers
      * (time between two neighboring segments of a flight)
-     * for compliance with the predicate
+     * for compliance with the predicate.
      * Returns whether any transfer of this flight match the provided predicate.*/
-    private static boolean ifAnyGroundTime(Flight flight, Predicate<Long> predicate, TimeMeasure unit) {
+    private static boolean ifAnyGroundTime(Flight flight, Predicate<Long> predicate) {
         return toPairs(flight)
                 .map(Pair::getDifference)
-                .map(d -> d / unit.getMillis())
                 .anyMatch(predicate);
     }
 
@@ -100,23 +99,6 @@ public class Rules {
             pairs.add(pair);
         }
         return pairs.stream();
-    }
-
-    /**General auxiliary methods and classes */
-    private static Stream<Long> streamOfLongFrom(Flight flight) {
-        return flight.getSegments().stream()
-                .flatMap(Rules::toDate)
-                .skip(1)//skip departure of the first segment
-                .limit(flight.getSegments().size() * 2L - 2)//remove arrival of the last segment
-                .map(Rules::toLong);
-    }
-
-    private static Stream<LocalDateTime> toDate(Segment segment) {
-        return Stream.of(segment.getDepartureDate(), segment.getArrivalDate());
-    }
-
-    private static Long toLong(LocalDateTime date) {
-        return Timestamp.valueOf(date).getTime();
     }
 
     static class Pair {
@@ -131,5 +113,22 @@ public class Rules {
         public static long getDifference(Pair pair) {
             return pair.right - pair.left;
         }
+    }
+
+    /**General auxiliary methods.*/
+    private static Stream<Long> streamOfLongFrom(Flight flight) {
+        return flight.getSegments().stream()
+                .flatMap(Rules::toDate)
+                .skip(1)//skip departure of the first segment
+                .limit(flight.getSegments().size() * 2L - 2)//remove arrival of the last segment
+                .map(Rules::toLong);
+    }
+
+    private static Stream<LocalDateTime> toDate(Segment segment) {
+        return Stream.of(segment.getDepartureDate(), segment.getArrivalDate());
+    }
+
+    private static Long toLong(LocalDateTime date) {
+        return Timestamp.valueOf(date).getTime();
     }
 }
