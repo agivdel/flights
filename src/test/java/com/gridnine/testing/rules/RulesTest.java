@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static com.gridnine.testing.rules.Rules.*;
+import static com.gridnine.testing.rules.PredicateConstants.*;
 import static com.gridnine.testing.util.FlightBuilderEnlarged.*;
 
 import java.util.ArrayList;

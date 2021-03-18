@@ -7,6 +7,7 @@ import com.gridnine.testing.util.FlightBuilder;
 import java.util.List;
 
 import static com.gridnine.testing.rules.Rules.*;
+import static com.gridnine.testing.rules.PredicateConstants.*;
 
 public class Main {
 
