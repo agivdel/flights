@@ -13,7 +13,11 @@ public enum TimeMeasure {
         this.value = value;
     }
 
-    public long getMillis() {
-        return value;
+    public static long ofHours(long value) {
+        return HOURS.value * value;
+    }
+
+    public static long ofMinutes(long value) {
+        return MINUTES.value * value;
     }
 }
