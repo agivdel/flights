@@ -13,14 +13,6 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 public class Rules {
-    private static final LocalDateTime now = LocalDateTime.now();
-    //TODO такое решение требует перезапуска каждый день. Исправить.
-
-    /**Examples of some prepared predicates.*/
-    public static final Predicate<Segment> departureInPast = s -> s.getDepartureDate().isBefore(now);
-    public static final Predicate<Segment> departureAfterArrival = (s) -> s.getDepartureDate().isAfter(s.getArrivalDate());
-    public static final Predicate<Flight> moreOne = f -> f.getSegments().size() > 1;
-    //TODO подумать о переносе констант в отдельный класс
 
     public static Rule<List<Flight>, List<Flight>> removeFlightIfDate(Predicate<Segment> predicate) {
         return flights -> flights.stream()
@@ -28,6 +20,7 @@ public class Rules {
                 .collect(toList());
     }
 
+    /**The method can work with combined predicates using "or"*/
     public static Rule<List<Flight>, List<Flight>> skipFlightIfDate(Predicate<Segment> predicate) {
         return flights -> flights.stream()
                 .filter(f -> f.getSegments().stream().allMatch(predicate))
@@ -40,6 +33,7 @@ public class Rules {
                 .collect(toList());
     }
 
+    /**The method can work with combined predicates using "or"*/
     public static Rule<List<Flight>, List<Flight>> skipFlightIfSegment(Predicate<Flight> predicate) {
         return flights -> flights.stream()
                 .filter(predicate)
@@ -52,6 +46,7 @@ public class Rules {
                 .collect(toList());
     }
 
+    /**The method can work with combined predicates using "or"*/
     public static Rule<List<Flight>, List<Flight>> skipFlightIfTotalGroundTime(Predicate<Long> predicate) {
         return flights -> flights.stream()
                 .filter(f -> ifTotalGroundTime(f, predicate))
@@ -64,6 +59,7 @@ public class Rules {
                 .collect(toList());
     }
 
+    /**The method can work with combined predicates using "or"*/
     public static Rule<List<Flight>, List<Flight>> skipFlightIfAnyGroundTime(Predicate<Long> predicate) {
         return flights -> flights.stream()
                 .filter(f -> ifAnyGroundTime(f, predicate))
