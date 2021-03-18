@@ -8,12 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.gridnine.testing.rules.PredicateConstants.*;
-import static com.gridnine.testing.rules.PredicateConstants.moreTwo;
 import static com.gridnine.testing.rules.Rules.*;
-import static com.gridnine.testing.rules.Rules.skipFlightIfAnyGroundTime;
+import static com.gridnine.testing.rules.TimeMeasure.*;
+import static com.gridnine.testing.rules.Predicates.*;
 import static com.gridnine.testing.util.FlightBuilderEnlarged.*;
-import static com.gridnine.testing.util.FlightBuilderEnlarged.sixHoursGroundTimeFlight;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -64,8 +62,8 @@ public class RulesCombinedPredicatesTest {
                 oneHourGroundTimeFlight,
                 sixHoursGroundTimeFlight);
         result = skipFlightIfTotalGroundTime(
-                ((Predicate<Long>) t -> t < TimeMeasure.ofHours(1))
-                        .or(t -> t > TimeMeasure.ofHours(2)))
+                ((Predicate<Long>) t -> t < ofHours(1))
+                        .or(t -> t > ofHours(2)))
                 .fromSource(flights);
 
         assertNotEquals(flights, result);
@@ -81,8 +79,8 @@ public class RulesCombinedPredicatesTest {
                 oneHourGroundTimeFlight,
                 sixHoursGroundTimeFlight);
         result = skipFlightIfAnyGroundTime(
-                ((Predicate<Long>) t -> t < TimeMeasure.ofHours(1))
-                        .or(t -> t == TimeMeasure.ofHours(5)))
+                ((Predicate<Long>) t -> t < ofHours(1))
+                        .or(t -> t == ofHours(5)))
                 .fromSource(flights);
 
         assertNotEquals(flights, result);
