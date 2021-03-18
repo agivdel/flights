@@ -10,7 +10,6 @@ import static com.gridnine.testing.util.FlightBuilderEnlarged.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class RulesTest {
     private List<Flight> flights = new ArrayList<>();
@@ -168,70 +167,6 @@ public class RulesTest {
         result = removeFlightIfDate(departureInPast)
                 .andThen(removeFlightIfDate(departureAfterArrival))
                 .andThen(removeFlightIfTotalGroundTime(t -> t >= TimeMeasure.ofMinutes(60)))
-                .fromSource(flights);
-
-        assertNotEquals(flights, result);
-        assertEquals(2, result.size());
-        assertEquals(flights.get(0), result.get(0));
-        assertEquals(flights.get(2), result.get(1));
-    }
-
-    @Test
-    public void skipFlightIfDate_combine_some_predicates_with_or() {
-        flights = createFlights(
-                normalOneSegmentFlight,
-                departureInPastFlight,
-                departureAfterArrivalFlight);
-        result = skipFlightIfDate(departureInPast.or(departureAfterArrival))
-                .fromSource(flights);
-
-        assertNotEquals(flights, result);
-        assertEquals(2, result.size());
-        assertEquals(flights.get(1), result.get(0));
-        assertEquals(flights.get(2), result.get(1));
-    }
-
-    @Test
-    public void skipFlightIfSegment_combine_some_predicates_with_or() {
-        flights = createFlights(
-                normalOneSegmentFlight,
-                oneHourGroundTimeFlight,
-                sixHoursGroundTimeFlight);
-        result = skipFlightIfSegment(one.or(moreTwo))
-                .fromSource(flights);
-
-        assertNotEquals(flights, result);
-        assertEquals(2, result.size());
-        assertEquals(flights.get(0), result.get(0));
-        assertEquals(flights.get(2), result.get(1));
-    }
-
-    @Test
-    public void skipFlightIfTotalGroundTime_combine_some_predicates_with_or() {
-        flights = createFlights(
-                less1HourGroundTimeFlight,
-                oneHourGroundTimeFlight,
-                sixHoursGroundTimeFlight);
-        result = skipFlightIfTotalGroundTime(
-                ((Predicate<Long>) t -> t < TimeMeasure.ofHours(1))
-                        .or(t -> t > TimeMeasure.ofHours(2)))
-                .fromSource(flights);
-
-        assertNotEquals(flights, result);
-        assertEquals(2, result.size());
-        assertEquals(flights.get(0), result.get(0));
-        assertEquals(flights.get(2), result.get(1));
-    }
-
-    @Test
-    public void skipFlightIfAnyGroundTime_combine_some_predicates_with_or() {
-        flights = createFlights(
-                less1HourGroundTimeFlight,
-                oneHourGroundTimeFlight,
-                sixHoursGroundTimeFlight);
-        result = skipFlightIfAnyGroundTime(
-                ((Predicate<Long>) t -> t < TimeMeasure.ofHours(1))
-                .or(t -> t == TimeMeasure.ofHours(5)))
                 .fromSource(flights);
 
         assertNotEquals(flights, result);

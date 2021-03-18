@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
+/**All skip-methods can work with combined predicates using "or"*/
 public class Rules {
 
     public static Rule<List<Flight>, List<Flight>> removeFlightIfDate(Predicate<Segment> predicate) {
@@ -20,7 +21,6 @@ public class Rules {
                 .collect(toList());
     }
 
-    /**The method can work with combined predicates using "or"*/
     public static Rule<List<Flight>, List<Flight>> skipFlightIfDate(Predicate<Segment> predicate) {
         return flights -> flights.stream()
                 .filter(f -> f.getSegments().stream().allMatch(predicate))
@@ -33,7 +33,6 @@ public class Rules {
                 .collect(toList());
     }
 
-    /**The method can work with combined predicates using "or"*/
     public static Rule<List<Flight>, List<Flight>> skipFlightIfSegment(Predicate<Flight> predicate) {
         return flights -> flights.stream()
                 .filter(predicate)
@@ -46,7 +45,6 @@ public class Rules {
                 .collect(toList());
     }
 
-    /**The method can work with combined predicates using "or"*/
     public static Rule<List<Flight>, List<Flight>> skipFlightIfTotalGroundTime(Predicate<Long> predicate) {
         return flights -> flights.stream()
                 .filter(f -> ifTotalGroundTime(f, predicate))
@@ -59,7 +57,7 @@ public class Rules {
                 .collect(toList());
     }
 
-    /**The method can work with combined predicates using "or"*/
+
     public static Rule<List<Flight>, List<Flight>> skipFlightIfAnyGroundTime(Predicate<Long> predicate) {
         return flights -> flights.stream()
                 .filter(f -> ifAnyGroundTime(f, predicate))
