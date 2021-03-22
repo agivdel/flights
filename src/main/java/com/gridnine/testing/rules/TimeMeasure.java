@@ -13,11 +13,11 @@ public enum TimeMeasure {
         this.value = value;
     }
 
-    public static long ofHours(long value) {
-        return HOURS.value * value;
+    public static Interval ofHours(long value) {
+        return new Interval(HOURS.value * value);
     }
 
-    public static long ofMinutes(long value) {
-        return MINUTES.value * value;
+    public static Interval ofMinutes(long value) {
+        return new Interval(MINUTES.value * value);
     }
 }
