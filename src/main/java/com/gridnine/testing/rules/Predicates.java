@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.function.Predicate;
 
 /**Examples of some prepared predicates.*/
-public class PredicateConstants {
+public class Predicates {
     private static final LocalDateTime now = LocalDateTime.now();
     //TODO такое решение требует перезапуска каждый день. Исправить.
 
@@ -19,32 +19,23 @@ public class PredicateConstants {
     public static final Predicate<Flight> moreOne = f -> f.getSegments().size() > 1;
     public static final Predicate<Flight> moreTwo = f -> f.getSegments().size() > 2;
 
-    //    public static final Predicate<Interval>
+    public static Predicate<Interval> lessThen(Interval limit) {
+        return interval -> interval.getMillis() < limit.getMillis();
+    }
 
-//    class Interval {
-//        private long millis;
-//
-//    }
-//
-//    public <T> Predicate<T> lessThen(TimeMeasure unit) {
-//        Predicate<T> predicate = new Predicate<T>() {
-//            @Override
-//            public boolean test(T t) {
-//                t < unit;
-//            }
-//        };
-//        return predicate;
-//    }
-//
-//    public static Rule<List<Flight>, List<Flight>> example(Predicate<Interval> predicate) {
-//        return flights -> flights.stream()
-//                .filter(f -> example2(f, predicate))
-//                .collect(toList());
-//    }
-//
-//    private static boolean example2(Flight flight, Predicate<Interval> predicate) {
-//        return toPairs(flight)
-//                .map(Pair::getDifference)
-//                .anyMatch(predicate);
-//    }
+    public static Predicate<Interval> moreThen(Interval limit) {
+        return interval -> interval.getMillis() > limit.getMillis();
+    }
+
+    public static Predicate<Interval> notLessThen(Interval limit) {
+        return interval -> interval.getMillis() >= limit.getMillis();
+    }
+
+    public static Predicate<Interval> notMoreThen(Interval limit) {
+        return interval -> interval.getMillis() <= limit.getMillis();
+    }
+
+    public static Predicate<Interval> equal(Interval limit) {
+        return interval -> interval.getMillis() == limit.getMillis();
+    }
 }
