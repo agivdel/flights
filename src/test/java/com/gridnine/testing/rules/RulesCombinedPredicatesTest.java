@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 import static com.gridnine.testing.rules.Rules.*;
 import static com.gridnine.testing.rules.TimeMeasure.*;
@@ -62,8 +61,7 @@ public class RulesCombinedPredicatesTest {
                 oneHourGroundTimeFlight,
                 sixHoursGroundTimeFlight);
         result = skipFlightIfTotalGroundTime(
-                ((Predicate<Long>) t -> t < ofHours(1))
-                        .or(t -> t > ofHours(2)))
+                lessThen(ofHours(1)).or(moreThen(ofHours(2))))
                 .fromSource(flights);
 
         assertNotEquals(flights, result);
@@ -79,8 +77,7 @@ public class RulesCombinedPredicatesTest {
                 oneHourGroundTimeFlight,
                 sixHoursGroundTimeFlight);
         result = skipFlightIfAnyGroundTime(
-                ((Predicate<Long>) t -> t < ofHours(1))
-                        .or(t -> t == ofHours(5)))
+                lessThen(ofHours(1)).or(equal(ofHours(5))))
                 .fromSource(flights);
 
         assertNotEquals(flights, result);

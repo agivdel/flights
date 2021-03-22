@@ -91,7 +91,7 @@ public class RulesTest {
     @Test
     public void removeFlightIfTotalGroundTime_the_normal_flights_are_remain_unchanged() {
         flights = createFlights(normalOneSegmentFlight, less1HourGroundTimeFlight);
-        List<Flight> result = removeFlightIfTotalGroundTime(t -> t > ofHours(2)).fromSource(flights);
+        List<Flight> result = removeFlightIfTotalGroundTime(moreThen(ofHours(2))).fromSource(flights);
 
         assertEquals(flights, result);
     }
@@ -99,7 +99,7 @@ public class RulesTest {
     @Test
     public void removeFlightIfTotalGroundTime_the_flights_that_didnt_satisfy_predicate_are_filtered_off() {
         flights = createFlights(threeHoursGroundTimeFlight, sixHoursGroundTimeFlight);
-        result = removeFlightIfTotalGroundTime(t -> t > ofHours(2)).fromSource(flights);
+        result = removeFlightIfTotalGroundTime(moreThen(ofHours(2))).fromSource(flights);
 
         assertTrue(result.isEmpty());
     }
@@ -107,7 +107,7 @@ public class RulesTest {
     @Test
     public void removeFlightIfTotalGroundTime_the_flights_that_didnt_satisfy_predicate_are_filtered_off2() {
         flights = createFlights(oneHourGroundTimeFlight, less1HourGroundTimeFlight);
-        result = removeFlightIfTotalGroundTime(t -> t < ofMinutes(60)).fromSource(flights);
+        result = removeFlightIfTotalGroundTime(lessThen(ofMinutes(60))).fromSource(flights);
 
         assertNotEquals(flights, result);
         assertEquals(1, result.size());
@@ -121,7 +121,7 @@ public class RulesTest {
                 oneHourGroundTimeFlight,
                 threeHoursGroundTimeFlight,
                 sixHoursGroundTimeFlight);
-        result = skipFlightIfTotalGroundTime(t -> t < ofMinutes(60)).fromSource(flights);
+        result = skipFlightIfTotalGroundTime(lessThen(ofMinutes(60))).fromSource(flights);
 
         assertEquals(1, result.size());
         assertEquals(flights.get(0), result.get(0));
@@ -134,7 +134,7 @@ public class RulesTest {
                 oneHourGroundTimeFlight,
                 threeHoursGroundTimeFlight,
                 sixHoursGroundTimeFlight);
-        result = removeFlightIfAnyGroundTime(t -> t < ofMinutes(60)).fromSource(flights);
+        result = removeFlightIfAnyGroundTime(lessThen(ofMinutes(60))).fromSource(flights);
 
         assertEquals(3, result.size());
         assertEquals(flights.get(1), result.get(0));
@@ -149,7 +149,7 @@ public class RulesTest {
                 oneHourGroundTimeFlight,
                 threeHoursGroundTimeFlight,
                 sixHoursGroundTimeFlight);
-        result = skipFlightIfAnyGroundTime(t -> t < ofMinutes(60)).fromSource(flights);
+        result = skipFlightIfAnyGroundTime(notMoreThen(ofMinutes(59))).fromSource(flights);
 
         assertEquals(1, result.size());
         assertEquals(flights.get(0), result.get(0));
@@ -167,7 +167,7 @@ public class RulesTest {
                 sixHoursGroundTimeFlight);
         result = removeFlightIfDate(departureInPast)
                 .andThen(removeFlightIfDate(departureAfterArrival))
-                .andThen(removeFlightIfTotalGroundTime(t -> t >= ofMinutes(60)))
+                .andThen(removeFlightIfTotalGroundTime(notLessThen(ofMinutes(60))))
                 .fromSource(flights);
 
         assertNotEquals(flights, result);
