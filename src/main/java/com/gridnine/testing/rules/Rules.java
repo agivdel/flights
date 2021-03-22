@@ -39,25 +39,25 @@ public class Rules {
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<Interval> predicate) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfTotalGroundTime(Predicate<GroundTime> predicate) {
         return flights -> flights.stream()
                 .filter(f -> !ifTotalGroundTime(f, predicate))
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> skipFlightIfTotalGroundTime(Predicate<Interval> predicate) {
+    public static Rule<List<Flight>, List<Flight>> skipFlightIfTotalGroundTime(Predicate<GroundTime> predicate) {
         return flights -> flights.stream()
                 .filter(f -> ifTotalGroundTime(f, predicate))
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> removeFlightIfAnyGroundTime(Predicate<Interval> predicate) {
+    public static Rule<List<Flight>, List<Flight>> removeFlightIfAnyGroundTime(Predicate<GroundTime> predicate) {
         return flights -> flights.stream()
                 .filter(f -> !ifAnyGroundTime(f, predicate))
                 .collect(toList());
     }
 
-    public static Rule<List<Flight>, List<Flight>> skipFlightIfAnyGroundTime(Predicate<Interval> predicate) {
+    public static Rule<List<Flight>, List<Flight>> skipFlightIfAnyGroundTime(Predicate<GroundTime> predicate) {
         return flights -> flights.stream()
                 .filter(f -> ifAnyGroundTime(f, predicate))
                 .collect(toList());
@@ -65,8 +65,8 @@ public class Rules {
 
     /**Auxiliary method for counting the total ground time for each flight.
      * Returns whether the total ground time of this flight match the provided predicate.*/
-    private static boolean ifTotalGroundTime(Flight flight, Predicate<Interval> predicate) {
-        Interval totalGroundTime = intervalsFrom(flight).reduce(Interval.zero(), Interval::sum);
+    private static boolean ifTotalGroundTime(Flight flight, Predicate<GroundTime> predicate) {
+        GroundTime totalGroundTime = groundTimesOf(flight).reduce(GroundTime.zero(), GroundTime::sum);
         return predicate.test(totalGroundTime);
     }
 
@@ -74,33 +74,30 @@ public class Rules {
      * (time between two neighboring segments of a flight)
      * for compliance with the predicate.
      * Returns whether any transfer of this flight match the provided predicate.*/
-    private static boolean ifAnyGroundTime(Flight flight, Predicate<Interval> predicate) {
-        return intervalsFrom(flight).anyMatch(predicate);
+    private static boolean ifAnyGroundTime(Flight flight, Predicate<GroundTime> predicate) {
+        return groundTimesOf(flight).anyMatch(predicate);
     }
 
     /**General auxiliary methods.*/
-    private static Stream<Interval> intervalsFrom(Flight flight) {
-        Long[] dates = longFrom(flight).toArray(Long[]::new);
-        List<Interval> intervals = new ArrayList<>();
+    private static Stream<GroundTime> groundTimesOf(Flight flight) {
+        Long[] dates = flight.getSegments().stream()
+                .flatMap(Rules::toDate)
+                .map(Rules::toLong)
+                .toArray(Long[]::new);
+        List<GroundTime> groundTimes = new ArrayList<>();
         //start from i=1 and go to i=length-1 to exclude from the processing
         // the departure of the 1st segment and the arrival of the last segment of the flight
         for (int i = 1; i < dates.length - 1; i += 2) {
-            intervals.add(new Interval(dates[i + 1] - dates[i]));
+            groundTimes.add(new GroundTime(dates[i + 1] - dates[i]));
         }
-        return intervals.stream();
+        return groundTimes.stream();
     }
 
-    private static Stream<Long> longFrom(Flight flight) {
-        return flight.getSegments().stream()
-                .flatMap(Rules::segmentToDate)
-                .map(Rules::dateToLong);
-    }
-
-    private static Stream<LocalDateTime> segmentToDate(Segment segment) {
+    private static Stream<LocalDateTime> toDate(Segment segment) {
         return Stream.of(segment.getDepartureDate(), segment.getArrivalDate());
     }
 
-    private static Long dateToLong(LocalDateTime date) {
+    private static Long toLong(LocalDateTime date) {
         return Timestamp.valueOf(date).getTime();
     }
 }
