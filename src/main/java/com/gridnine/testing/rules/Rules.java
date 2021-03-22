@@ -92,15 +92,15 @@ public class Rules {
 
     private static Stream<Long> longFrom(Flight flight) {
         return flight.getSegments().stream()
-                .flatMap(Rules::toDate)
-                .map(Rules::toLong);
+                .flatMap(Rules::segmentToDate)
+                .map(Rules::dateToLong);
     }
 
-    private static Stream<LocalDateTime> toDate(Segment segment) {
+    private static Stream<LocalDateTime> segmentToDate(Segment segment) {
         return Stream.of(segment.getDepartureDate(), segment.getArrivalDate());
     }
 
-    private static Long toLong(LocalDateTime date) {
+    private static Long dateToLong(LocalDateTime date) {
         return Timestamp.valueOf(date).getTime();
     }
 }
