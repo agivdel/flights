@@ -57,7 +57,6 @@ public class Rules {
                 .collect(toList());
     }
 
-
     public static Rule<List<Flight>, List<Flight>> skipFlightIfAnyGroundTime(Predicate<Interval> predicate) {
         return flights -> flights.stream()
                 .filter(f -> ifAnyGroundTime(f, predicate))
@@ -81,11 +80,12 @@ public class Rules {
 
     /**General auxiliary methods.*/
     private static Stream<Interval> intervalsFrom(Flight flight) {
-        Long[] longArray = longFrom(flight).toArray(Long[]::new);
+        Long[] dates = longFrom(flight).toArray(Long[]::new);
         List<Interval> intervals = new ArrayList<>();
-        for (int i = 0; i < longArray.length; i += 2) {
-            Interval interval = new Interval(longArray[i + 1] - longArray[i]);
-            intervals.add(interval);
+        //start from i=1 and go to i=length-1 to exclude from the processing
+        // the departure of the 1st segment and the arrival of the last segment of the flight
+        for (int i = 1; i < dates.length - 1; i += 2) {
+            intervals.add(new Interval(dates[i + 1] - dates[i]));
         }
         return intervals.stream();
     }
@@ -93,8 +93,6 @@ public class Rules {
     private static Stream<Long> longFrom(Flight flight) {
         return flight.getSegments().stream()
                 .flatMap(Rules::toDate)
-                .skip(1)//skip departure of the first segment
-                .limit(flight.getSegments().size() * 2L - 2)//remove arrival of the last segment
                 .map(Rules::toLong);
     }
 
