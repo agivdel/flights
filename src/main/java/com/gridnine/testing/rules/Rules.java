@@ -64,12 +64,11 @@ public class Rules {
                 .collect(toList());
     }
 
-    /**Auxiliary methods for counting the total ground time for each flight.
+    /**Auxiliary method for counting the total ground time for each flight.
      * Returns whether the total ground time of this flight match the provided predicate.*/
     private static boolean ifTotalGroundTime(Flight flight, Predicate<Interval> predicate) {
-        return predicate.test(
-                toIntervals(flight)
-                .reduce(Interval.zero(), Interval::sum));
+        Interval totalGroundTime = intervalsFrom(flight).reduce(Interval.zero(), Interval::sum);
+        return predicate.test(totalGroundTime);
     }
 
     /**Auxiliary method for checking each transfers
@@ -77,13 +76,12 @@ public class Rules {
      * for compliance with the predicate.
      * Returns whether any transfer of this flight match the provided predicate.*/
     private static boolean ifAnyGroundTime(Flight flight, Predicate<Interval> predicate) {
-        return toIntervals(flight)
-                .anyMatch(predicate);
+        return intervalsFrom(flight).anyMatch(predicate);
     }
 
     /**General auxiliary methods and classes.*/
-    private static Stream<Interval> toIntervals(Flight flight) {
-        Long[] longArray = streamOfLongFrom(flight).toArray(Long[]::new);
+    private static Stream<Interval> intervalsFrom(Flight flight) {
+        Long[] longArray = longFrom(flight).toArray(Long[]::new);
         List<Interval> intervals = new ArrayList<>();
         for (int i = 0; i < longArray.length; i += 2) {
             Interval interval = new Interval(longArray[i + 1] - longArray[i]);
@@ -92,7 +90,7 @@ public class Rules {
         return intervals.stream();
     }
 
-    private static Stream<Long> streamOfLongFrom(Flight flight) {
+    private static Stream<Long> longFrom(Flight flight) {
         return flight.getSegments().stream()
                 .flatMap(Rules::toDate)
                 .skip(1)//skip departure of the first segment
