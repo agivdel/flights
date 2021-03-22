@@ -79,7 +79,7 @@ public class Rules {
         return intervalsFrom(flight).anyMatch(predicate);
     }
 
-    /**General auxiliary methods and classes.*/
+    /**General auxiliary methods.*/
     private static Stream<Interval> intervalsFrom(Flight flight) {
         Long[] longArray = longFrom(flight).toArray(Long[]::new);
         List<Interval> intervals = new ArrayList<>();
