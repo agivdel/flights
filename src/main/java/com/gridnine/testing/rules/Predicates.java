@@ -19,23 +19,23 @@ public class Predicates {
     public static final Predicate<Flight> moreOne = f -> f.getSegments().size() > 1;
     public static final Predicate<Flight> moreTwo = f -> f.getSegments().size() > 2;
 
-    public static Predicate<Interval> lessThen(Interval limit) {
-        return interval -> interval.getMillis() < limit.getMillis();
+    public static Predicate<GroundTime> lessThen(GroundTime limit) {
+        return groundTime -> groundTime.getMillis() < limit.getMillis();
     }
 
-    public static Predicate<Interval> moreThen(Interval limit) {
-        return interval -> interval.getMillis() > limit.getMillis();
+    public static Predicate<GroundTime> moreThen(GroundTime limit) {
+        return groundTime -> groundTime.getMillis() > limit.getMillis();
     }
 
-    public static Predicate<Interval> notLessThen(Interval limit) {
-        return interval -> interval.getMillis() >= limit.getMillis();
+    public static Predicate<GroundTime> notLessThen(GroundTime limit) {
+        return groundTime -> groundTime.getMillis() >= limit.getMillis();
     }
 
-    public static Predicate<Interval> notMoreThen(Interval limit) {
-        return interval -> interval.getMillis() <= limit.getMillis();
+    public static Predicate<GroundTime> notMoreThen(GroundTime limit) {
+        return groundTime -> groundTime.getMillis() <= limit.getMillis();
     }
 
-    public static Predicate<Interval> equal(Interval limit) {
-        return interval -> interval.getMillis() == limit.getMillis();
+    public static Predicate<GroundTime> equal(GroundTime limit) {
+        return groundTime -> groundTime.getMillis() == limit.getMillis();
     }
 }
