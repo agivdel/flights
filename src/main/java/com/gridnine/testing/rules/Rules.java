@@ -67,12 +67,9 @@ public class Rules {
     /**Auxiliary methods for counting the total ground time for each flight.
      * Returns whether the total ground time of this flight match the provided predicate.*/
     private static boolean ifTotalGroundTime(Flight flight, Predicate<Interval> predicate) {
-        return predicate.test(totalGroundTime(flight));
-    }
-
-    private static Interval totalGroundTime(Flight flight) {
-        return toIntervals(flight)
-                .reduce(Interval.zero(), Interval::sum);//count the total ground time
+        return predicate.test(
+                toIntervals(flight)
+                .reduce(Interval.zero(), Interval::sum));
     }
 
     /**Auxiliary method for checking each transfers
