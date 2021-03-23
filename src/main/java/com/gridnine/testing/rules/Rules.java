@@ -3,7 +3,6 @@ package com.gridnine.testing.rules;
 import com.gridnine.testing.entities.Flight;
 import com.gridnine.testing.entities.Segment;
 
-import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
