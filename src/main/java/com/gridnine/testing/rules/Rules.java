@@ -64,11 +64,14 @@ public class Rules {
                 .collect(toList());
     }
 
-    /**Auxiliary method for counting the total ground time for each flight.
+    /**Auxiliary methods for counting the total ground time for each flight.
      * Returns whether the total ground time of this flight match the provided predicate.*/
     private static boolean ifTotalGroundTime(Flight flight, Predicate<GroundTime> predicate) {
-        GroundTime totalGroundTime = groundTimesOf(flight).reduce(GroundTime.zero(), GroundTime::sum);
-        return predicate.test(totalGroundTime);
+        return predicate.test(totalGroundTimeOf(flight));
+    }
+
+    private static GroundTime totalGroundTimeOf(Flight flight) {
+        return groundTimesOf(flight).reduce(GroundTime.zero(), GroundTime::sum);
     }
 
     /**Auxiliary method for checking each transfers
