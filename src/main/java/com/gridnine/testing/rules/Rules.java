@@ -4,6 +4,7 @@ import com.gridnine.testing.entities.Flight;
 import com.gridnine.testing.entities.Segment;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,24 +81,16 @@ public class Rules {
 
     /**General auxiliary methods.*/
     private static Stream<GroundTime> groundTimesOf(Flight flight) {
-        Long[] dates = flight.getSegments().stream()
-                .flatMap(Rules::toDate)
-                .map(Rules::toLong)
-                .toArray(Long[]::new);
+        Segment prevSegment = null;
         List<GroundTime> groundTimes = new ArrayList<>();
-        //start from i=1 and go to i=length-1 to exclude from the processing
-        // the departure of the 1st segment and the arrival of the last segment of the flight
-        for (int i = 1; i < dates.length - 1; i += 2) {
-            groundTimes.add(new GroundTime(dates[i + 1] - dates[i]));
+        for (Segment segment : flight.getSegments()) {
+            if (prevSegment != null) {
+                final LocalDateTime start = prevSegment.getArrivalDate();
+                final LocalDateTime end = segment.getDepartureDate();
+                groundTimes.add(new GroundTime(Duration.between(start, end).toMillis()));
+            }
+            prevSegment = segment;
         }
         return groundTimes.stream();
-    }
-
-    private static Stream<LocalDateTime> toDate(Segment segment) {
-        return Stream.of(segment.getDepartureDate(), segment.getArrivalDate());
-    }
-
-    private static Long toLong(LocalDateTime date) {
-        return Timestamp.valueOf(date).getTime();
     }
 }
