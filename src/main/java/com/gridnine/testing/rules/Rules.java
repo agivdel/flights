@@ -79,7 +79,7 @@ public class Rules {
         return groundTimesOf(flight).anyMatch(predicate);
     }
 
-    /**General auxiliary methods.*/
+    /**General auxiliary method.*/
     private static Stream<GroundTime> groundTimesOf(Flight flight) {
         Segment prevSegment = null;
         List<GroundTime> groundTimes = new ArrayList<>();
